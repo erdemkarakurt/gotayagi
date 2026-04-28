@@ -33,14 +33,14 @@ function slugify(text) {
     .replace(/(^-|-$)/g, "");
 }
 
-// 🔥 title generator
+// 🔥 title generator (FARKINDALIK TEMALI)
 function generateTitle(topic) {
   const patterns = [
-    `${topic} hakkında kimsenin fark etmediği gerçek`,
-    `${topic} düşündüğünden daha karmaşık olabilir`,
-    `${topic} aslında yanlış sorulmuş bir soru`,
-    `${topic} ve mantığın kısa devresi`,
-    `${topic} üzerine konuşurken yanlışlıkla doğruyu bulmak`
+    `${topic} aslında her gün fark etmeden yaptığın bir şey`,
+    `${topic} düşündüğünden daha garip bir sistem olabilir`,
+    `${topic} ve farkında olmadan yaşadığın küçük gerçekler`,
+    `${topic} üzerine düşününce her şey biraz tuhaflaşıyor`,
+    `${topic} sandığın kadar sıradan olmayabilir`
   ];
 
   return patterns[Math.floor(Math.random() * patterns.length)];
@@ -62,35 +62,36 @@ async function generateText() {
   if (!API_KEY) throw new Error("GROQ_API_KEY missing!");
 
   const topics = [
-    "başarı",
-    "tembellik",
-    "zenginlik",
-    "motivasyon",
-    "hayatın anlamı",
-    "hiçlik",
-    "çalışmamak",
-    "başarısızlık"
+    "uyanmak",
+    "kahve içmek",
+    "yürümek",
+    "zaman",
+    "telefon",
+    "düşünmek",
+    "nefes almak",
+    "beklemek"
   ];
 
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 💥 ZİHİN KURCALAYAN PROMPT
+  // 💥 FARKINDALIK + ABSÜRT + KOMİK PROMPT
   const prompt = `
-Sen "gotayagi" adlı absürt ve zihin kurcalayan kişisel gelişim evreninin yazarıısın.
+Sen "gotayagi" adlı absürt, komik ve hafif felsefi içerikler üreten bir yazarsın.
 
-Görev:
-Mantıklı gibi başlayıp giderek çelişen ve sonunda paradoks bırakan 4 cümlelik kısa metin yaz.
+AMAÇ:
+İnsanların her gün yaptığı sıradan şeylerin aslında ne kadar tuhaf ve fark edilmeden yaşandığını komik bir şekilde anlatmak.
 
-Kurallar:
-- 1. cümle mantıklı görünmeli
-- 2. cümle hafif çelişmeli
-- 3. cümle çelişkiyi derinleştirmeli
-- 4. cümle paradoks içermeli
-- komik ama düşündürücü olmalı
-- ciddi anlatım + absürt fikir dengesi
-- sadece eğlence amaçlı
+TARZ:
+- 3 ila 5 cümle
+- günlük sıradan bir şeyle başla (${topic})
+- sonra bunu garip bir felsefi düşünceye çevir
+- komik ama düşündürücü olsun
+- hafif ironi içersin
+- suçlayıcı değil, fark ettirici olsun
 
-Konu: ${topic}
+KISIT:
+- karanlık içerik yok
+- sadece eğlence ve zihinsel oyun
 
 Şimdi yaz:
 `;
@@ -115,8 +116,6 @@ Konu: ${topic}
 
       const data = await res.json();
 
-      console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
-
       const content = data?.choices?.[0]?.message?.content;
 
       if (!content) {
@@ -125,13 +124,11 @@ Konu: ${topic}
       }
 
       if (isUnsafe(content)) {
-        console.log("❌ UNSAFE CONTENT BLOCKED");
         tries++;
         continue;
       }
 
       if (isDuplicate(content)) {
-        console.log("⚠️ DUPLICATE");
         tries++;
         continue;
       }
@@ -140,7 +137,6 @@ Konu: ${topic}
       break;
 
     } catch (err) {
-      console.log("❌ ERROR:", err.message);
       tries++;
     }
   }
