@@ -1,13 +1,22 @@
 const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Stabil kütüphane ile API'ye bağlanıyoruz
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const apiKey = process.env.GEMINI_API_KEY;
+
+// AJAN KONTROLÜ: Şifre GitHub'dan geliyor mu?
+if (!apiKey) {
+    console.error("🔥 HATA: API Anahtarı BOŞ! GitHub Secrets yanlış ayarlanmış.");
+    process.exit(1);
+} else {
+    console.log(`✅ Şifre algılandı! Uzunluk: ${apiKey.length} karakter. İlk 3 harf: ${apiKey.substring(0, 3)}`);
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 async function main() {
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Başka hiçbir açıklama yapma. Ekranda tam ortada duracak kısa bir manifesto gibi olsun.";
+        const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Sadece sözü ver.";
         
         const result = await model.generateContent(prompt);
         const quote = result.response.text().trim();
@@ -16,7 +25,7 @@ async function main() {
         console.log("Yeni saçmalık başarıyla üretildi:", quote);
 
     } catch (error) {
-        console.error("API Hatası:", error);
+        console.error("🔥 API Hatası Detayı:", error.message);
         process.exit(1); 
     }
 }
