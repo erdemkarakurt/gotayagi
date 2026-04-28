@@ -7,12 +7,13 @@ if (!fs.existsSync("content")) {
   fs.mkdirSync("content", { recursive: true });
 }
 
+// 📦 history
 const historyFile = "content/history.json";
 let history = [];
 
 if (fs.existsSync(historyFile)) {
   try {
-    history = JSON.parse(fs.readFileSync(historyFile));
+    history = JSON.parse(fs.readFileSync(historyFile, "utf-8"));
   } catch {
     history = [];
   }
@@ -51,6 +52,10 @@ function isDuplicate(text) {
 }
 
 async function generateText() {
+  if (!API_KEY) {
+    throw new Error("GROQ_API_KEY missing!");
+  }
+
   const topics = [
     "başarı", "tembellik", "zenginlik", "motivasyon",
     "hayatın anlamı", "hiçlik", "çalışmamak", "başarısızlık"
@@ -71,34 +76,56 @@ Kurallar:
   let tries = 0;
 
   while (tries < 3) {
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "llama3-8b-8192",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 1.2
-      })
-    });
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 1.2
+        })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    console.log("GROQ RESPONSE:", JSON.stringify(data));
+      // 🔥 FULL DEBUG
+      console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
 
-    if (!data?.choices?.[0]?.message?.content) {
-      console.log("AI ERROR:", data);
+      if (data?.error) {
+        console.log("❌ API ERROR:", data.error);
+        tries++;
+        continue;
+      }
+
+      const content = data?.choices?.[0]?.message?.content;
+
+      if (!content) {
+        console.log("❌ EMPTY RESPONSE:", data);
+        tries++;
+        continue;
+      }
+
+      if (isDuplicate(content)) {
+        console.log("⚠️ DUPLICATE DETECTED");
+        tries++;
+        continue;
+      }
+
+      text = content;
+      break;
+
+    } catch (err) {
+      console.log("❌ FETCH ERROR:", err.message);
       tries++;
-      continue;
     }
+  }
 
-    text = data.choices[0].message.content;
-
-    if (!isDuplicate(text)) break;
-
-    tries++;
+  if (!text) {
+    throw new Error("AI failed after 3 tries");
   }
 
   const date = new Date().toISOString().split("T")[0];
