@@ -18,7 +18,7 @@ jobs:
           node-version: '20'
 
       - name: Paketleri Yükle
-        run: npm install @google/genai
+         run: npm install @google/generative-ai
 
       - name: Yeni Yaziyi Uret
         env:
