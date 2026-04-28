@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 
 const API_KEY = process.env.GROQ_API_KEY;
 
@@ -18,14 +18,11 @@ async function generateText() {
 
   const prompt = `
 Türkçe absürt kişisel gelişim yazısı yaz.
-
-Kural:
-- Komik ve mantıksız olacak
-- Kendi içinde çelişkili olacak
+- Komik ve mantıksız
+- Çelişkili
 - 3-5 cümle
 - Konu: ${topic}
 - Emoji yok
-- Motivasyon gibi başlayıp saçmalayacak
 `;
 
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -37,10 +34,7 @@ Kural:
     body: JSON.stringify({
       model: "llama3-8b-8192",
       messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
+        { role: "user", content: prompt }
       ],
       temperature: 1.2,
     }),
@@ -48,7 +42,7 @@ Kural:
 
   const data = await response.json();
 
-  const text = data.choices?.[0]?.message?.content || "Bugün evren boş kaldı.";
+  const text = data.choices?.[0]?.message?.content || "Bugün sistem boş kaldı.";
 
   fs.writeFileSync(
     "data.json",
