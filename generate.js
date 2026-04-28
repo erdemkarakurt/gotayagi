@@ -33,14 +33,14 @@ function slugify(text) {
     .replace(/(^-|-$)/g, "");
 }
 
-// 🔥 viral title
+// 🔥 title generator
 function generateTitle(topic) {
   const patterns = [
-    `${topic} hakkında kimsenin bilmediği gerçek`,
-    `${topic} yüzünden hayatım değişti`,
-    `${topic} aslında tamamen yanlış anlaşılmış`,
-    `Uzmanlara göre ${topic} bir illüzyon`,
-    `${topic} ve evrenin gizli düzeni`
+    `${topic} hakkında kimsenin fark etmediği gerçek`,
+    `${topic} düşündüğünden daha karmaşık olabilir`,
+    `${topic} aslında yanlış sorulmuş bir soru`,
+    `${topic} ve mantığın kısa devresi`,
+    `${topic} üzerine konuşurken yanlışlıkla doğruyu bulmak`
   ];
 
   return patterns[Math.floor(Math.random() * patterns.length)];
@@ -51,10 +51,15 @@ function isDuplicate(text) {
   return history.some(h => h.text === text);
 }
 
+// 🧠 SAFETY FILTER
+function isUnsafe(text) {
+  const banned = ["intihar", "ölüm", "şiddet", "kendini", "kan"];
+  const lower = text.toLowerCase();
+  return banned.some(w => lower.includes(w));
+}
+
 async function generateText() {
-  if (!API_KEY) {
-    throw new Error("GROQ_API_KEY missing!");
-  }
+  if (!API_KEY) throw new Error("GROQ_API_KEY missing!");
 
   const topics = [
     "başarı", "tembellik", "zenginlik", "motivasyon",
@@ -63,26 +68,28 @@ async function generateText() {
 
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 💥 ULTRA ABSÜRT PROMPT (YENİ ÇEKİRDEK)
-const prompt = `
-Sen "gotayagi" adlı absürt ama zihin kurcalayan kişisel gelişim evreninin yazarısın.
+  // 💥 ULTRA ZİHİN KIRICI PROMPT
+  const prompt = `
+Sen "gotayagi" adlı absürt, komik ve zihin kurcalayan kişisel gelişim evreninin yazarıısın.
 
-Amaç:
-İnsanları güldürürken aynı zamanda düşündüren, mantıklı gibi başlayıp saçmalığa kayan kısa metinler yazmak.
+AMAÇ:
+Okuyucuya mantıklı gibi başlayan ama giderek çelişen ve sonunda paradoks bırakan kısa metin yaz.
 
-Stil:
-- 3 ila 5 cümle
-- ilk cümle mantıklı gibi görünür
-- sonraki cümleler yavaş yavaş çelişir
-- sonunda küçük bir zihinsel paradoks oluşur
-- komik ama “dur bir saniye bu neydi?” hissi bırakmalı
-- aşırı karanlık, zarar verici, negatif içerik yok
-- tamamen eğlence ve zihinsel oyun
+ZORUNLU YAPI:
+- 4 cümle üret
+- 1. cümle mantıklı görünmeli
+- 2. cümle hafif çelişmeli
+- 3. cümle çelişkiyi derinleştirmeli
+- 4. cümle kesinlikle paradoks içermeli
 
-Kurallar:
-- soyut düşünceler kullan (zaman, seçim, başarı, düşünce, anlam)
-- kelimeler basit ama fikirler karmaşık olabilir
-- açıklama yapma, çelişki yarat
+STİL:
+- ciddi anlatım + absürt fikir
+- komik ama düşündürücü
+- “dur bir saniye” etkisi
+
+KISIT:
+- şiddet, zarar, ölüm yok
+- sadece eğlence ve zihinsel oyun
 
 Konu: ${topic}
 
@@ -103,7 +110,7 @@ Konu: ${topic}
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
-          temperature: 1.3
+          temperature: 1.35
         })
       });
 
@@ -125,13 +132,19 @@ Konu: ${topic}
         continue;
       }
 
+      if (isUnsafe(content)) {
+        console.log("❌ UNSAFE CONTENT BLOCKED");
+        tries++;
+        continue;
+      }
+
       if (isDuplicate(content)) {
         console.log("⚠️ DUPLICATE DETECTED");
         tries++;
         continue;
       }
 
-      text = content;
+      text = content.trim();
       break;
 
     } catch (err) {
@@ -157,6 +170,7 @@ Konu: ${topic}
     text
   };
 
+  // 💾 save
   fs.writeFileSync(`content/${date}.json`, JSON.stringify(payload, null, 2));
   fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
 
