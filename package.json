@@ -1,9 +1,11 @@
 {
   "name": "gotayagi",
   "version": "1.0.0",
-  "description": "Otomatik sacmalik uretici",
-  "main": "update_quote.js",
-  "dependencies": {
-    "@google/generative-ai": "^0.21.0"
-  }
+  "description": "Otomatik absürt kişisel gelişim üretici",
+  "main": "generate.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node generate.js"
+  },
+  "dependencies": {}
 }
