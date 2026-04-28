@@ -1,18 +1,17 @@
 const fs = require('fs');
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Stabil kütüphane ile API'ye bağlanıyoruz
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function main() {
     try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Başka hiçbir açıklama yapma. Ekranda tam ortada duracak kısa bir manifesto gibi olsun.";
         
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-        });
-
-        const quote = response.text.trim();
+        const result = await model.generateContent(prompt);
+        const quote = result.response.text().trim();
+        
         fs.writeFileSync('yazi.txt', quote);
         console.log("Yeni saçmalık başarıyla üretildi:", quote);
 
