@@ -1,0 +1,9 @@
+{
+  "name": "gotayagi",
+  "version": "1.0.0",
+  "description": "Otomatik sacmalik uretici",
+  "main": "update_quote.js",
+  "dependencies": {
+    "@google/genai": "^0.1.2"
+  }
+}
