@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>gotayagi</title>
+
   <style>
     body {
       margin: 0;
@@ -29,24 +30,13 @@
 <div id="text">yükleniyor...</div>
 
 <script>
-async function loadText() {
-  try {
-    const res = await fetch("data.json?v=" + Date.now());
-
-    if (!res.ok) throw new Error("JSON load failed");
-
-    const data = await res.json();
-
-    document.getElementById("text").innerText =
-      data.text || "Evren bugün sessiz kaldı.";
-  } 
-  catch (err) {
-    document.getElementById("text").innerText =
-      "Sistem geçici olarak saçmalıyor...";
-  }
+async function load() {
+  const res = await fetch("data.json?v=" + Date.now());
+  const data = await res.json();
+  document.getElementById("text").innerText = data.text;
 }
 
-loadText();
+load();
 </script>
 
 </body>
