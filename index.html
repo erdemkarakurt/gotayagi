@@ -127,22 +127,23 @@ draw();
 ========================= */
 
 async function load() {
-  try {
-    const res = await fetch("data.json?v=" + Date.now(), {
-      cache: "no-store"
-    });
+  const url = "data.json?t=" + Date.now();
 
-    const d = await res.json();
+  const res = await fetch(url, {
+    cache: "no-store",
+    headers: {
+      "Cache-Control": "no-cache"
+    }
+  });
 
-    document.title = d.title;
+  const d = await res.json();
 
-    document.getElementById("title").innerText = d.title;
-    document.getElementById("text").innerText = d.text;
-    document.getElementById("meta").innerText = `${d.topic} • ${d.date}`;
+  console.log("LOADED DATA:", d); // 🔥 DEBUG
 
-  } catch (e) {
-    document.getElementById("text").innerText = "yüklenemedi";
-  }
+  document.title = d.title || "gotayagi";
+  document.getElementById("title").innerText = d.title || "";
+  document.getElementById("text").innerText = d.text || "";
+  document.getElementById("meta").innerText = `${d.topic || ""} • ${d.date || ""}`;
 }
 
 load();
