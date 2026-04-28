@@ -7,15 +7,18 @@ if (!fs.existsSync("content")) {
   fs.mkdirSync("content", { recursive: true });
 }
 
-// 📦 geçmiş içerikler (duplicate engel)
 const historyFile = "content/history.json";
 let history = [];
 
 if (fs.existsSync(historyFile)) {
-  history = JSON.parse(fs.readFileSync(historyFile));
+  try {
+    history = JSON.parse(fs.readFileSync(historyFile));
+  } catch {
+    history = [];
+  }
 }
 
-// 🎯 SEO slug generator
+// 🔥 slug generator
 function slugify(text) {
   return text
     .toLowerCase()
@@ -29,20 +32,20 @@ function slugify(text) {
     .replace(/(^-|-$)/g, "");
 }
 
-// 🔥 viral başlık generator
+// 🔥 viral title
 function generateTitle(topic) {
   const patterns = [
     `${topic} hakkında kimsenin bilmediği gerçek`,
     `${topic} yüzünden hayatım değişti`,
-    `${topic} aslında bir yalan olabilir`,
-    `Uzmanlara göre ${topic} tamamen saçmalık`,
-    `${topic} ve evrenin gizli planı`
+    `${topic} aslında tamamen yanlış anlaşılmış`,
+    `Uzmanlara göre ${topic} bir illüzyon`,
+    `${topic} ve evrenin gizli düzeni`
   ];
 
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
 
-// ❌ duplicate kontrol
+// ❌ duplicate check
 function isDuplicate(text) {
   return history.some(h => h.text === text);
 }
@@ -55,21 +58,19 @@ async function generateText() {
 
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  let text = "";
-  let tries = 0;
-
-  // 🔁 duplicate engelli üretim
-  while (tries < 3) {
-    const prompt = `
+  const prompt = `
 Türkçe absürt kişisel gelişim yazısı yaz.
 
 Kurallar:
 - 3-5 cümle
-- komik ve mantıksız
-- çelişkili
+- komik, mantıksız, çelişkili
 - konu: ${topic}
 `;
 
+  let text = "";
+  let tries = 0;
+
+  while (tries < 3) {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -84,7 +85,16 @@ Kurallar:
     });
 
     const data = await res.json();
-    text = data?.choices?.[0]?.message?.content || "Evren sessiz kaldı.";
+
+    console.log("GROQ RESPONSE:", JSON.stringify(data));
+
+    if (!data?.choices?.[0]?.message?.content) {
+      console.log("AI ERROR:", data);
+      tries++;
+      continue;
+    }
+
+    text = data.choices[0].message.content;
 
     if (!isDuplicate(text)) break;
 
@@ -93,10 +103,7 @@ Kurallar:
 
   const date = new Date().toISOString().split("T")[0];
 
-  // 🔥 viral başlık
   const title = generateTitle(topic);
-
-  // 🔥 SEO slug
   const slug = slugify(title);
 
   const payload = {
@@ -107,11 +114,9 @@ Kurallar:
     text
   };
 
-  // 📦 kaydet
   fs.writeFileSync(`content/${date}.json`, JSON.stringify(payload, null, 2));
   fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
 
-  // 📚 history update (son 30 içerik)
   history.push(payload);
   history = history.slice(-30);
 
