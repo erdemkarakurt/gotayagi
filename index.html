@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Götayağı - Günlük Doz</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fcfcfc;
+            font-family: 'Courier New', Courier, monospace;
+            color: #111;
+            text-align: center;
+            padding: 20px;
+        }
+        #quote-container {
+            max-width: 800px;
+            font-size: 2.5rem;
+            line-height: 1.4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quote-container">
+        Evrenle bağlantı kuruluyor...
+    </div>
+
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        fetch(`yazi.txt?v=${today}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('quote-container').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('quote-container').innerText = "Bugün kişisel gelişim için fazla yorgunuz. Yarın gel.";
+            });
+    </script>
+
+</body>
+</html>
