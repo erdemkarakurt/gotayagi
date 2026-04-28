@@ -51,7 +51,7 @@ function isDuplicate(text) {
   return history.some(h => h.text === text);
 }
 
-// 🧠 SAFETY FILTER
+// 🧠 safety filter
 function isUnsafe(text) {
   const banned = ["intihar", "ölüm", "şiddet", "kendini", "kan"];
   const lower = text.toLowerCase();
@@ -62,34 +62,33 @@ async function generateText() {
   if (!API_KEY) throw new Error("GROQ_API_KEY missing!");
 
   const topics = [
-    "başarı", "tembellik", "zenginlik", "motivasyon",
-    "hayatın anlamı", "hiçlik", "çalışmamak", "başarısızlık"
+    "başarı",
+    "tembellik",
+    "zenginlik",
+    "motivasyon",
+    "hayatın anlamı",
+    "hiçlik",
+    "çalışmamak",
+    "başarısızlık"
   ];
 
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 💥 ULTRA ZİHİN KIRICI PROMPT
+  // 💥 ZİHİN KURCALAYAN PROMPT
   const prompt = `
-Sen "gotayagi" adlı absürt, komik ve zihin kurcalayan kişisel gelişim evreninin yazarıısın.
+Sen "gotayagi" adlı absürt ve zihin kurcalayan kişisel gelişim evreninin yazarıısın.
 
-AMAÇ:
-Okuyucuya mantıklı gibi başlayan ama giderek çelişen ve sonunda paradoks bırakan kısa metin yaz.
+Görev:
+Mantıklı gibi başlayıp giderek çelişen ve sonunda paradoks bırakan 4 cümlelik kısa metin yaz.
 
-ZORUNLU YAPI:
-- 4 cümle üret
+Kurallar:
 - 1. cümle mantıklı görünmeli
 - 2. cümle hafif çelişmeli
 - 3. cümle çelişkiyi derinleştirmeli
-- 4. cümle kesinlikle paradoks içermeli
-
-STİL:
-- ciddi anlatım + absürt fikir
-- komik ama düşündürücü
-- “dur bir saniye” etkisi
-
-KISIT:
-- şiddet, zarar, ölüm yok
-- sadece eğlence ve zihinsel oyun
+- 4. cümle paradoks içermeli
+- komik ama düşündürücü olmalı
+- ciddi anlatım + absürt fikir dengesi
+- sadece eğlence amaçlı
 
 Konu: ${topic}
 
@@ -118,16 +117,9 @@ Konu: ${topic}
 
       console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
 
-      if (data?.error) {
-        console.log("❌ API ERROR:", data.error);
-        tries++;
-        continue;
-      }
-
       const content = data?.choices?.[0]?.message?.content;
 
       if (!content) {
-        console.log("❌ EMPTY RESPONSE:", data);
         tries++;
         continue;
       }
@@ -139,7 +131,7 @@ Konu: ${topic}
       }
 
       if (isDuplicate(content)) {
-        console.log("⚠️ DUPLICATE DETECTED");
+        console.log("⚠️ DUPLICATE");
         tries++;
         continue;
       }
@@ -148,32 +140,43 @@ Konu: ${topic}
       break;
 
     } catch (err) {
-      console.log("❌ FETCH ERROR:", err.message);
+      console.log("❌ ERROR:", err.message);
       tries++;
     }
   }
 
-  if (!text) {
-    throw new Error("AI failed after 3 tries");
-  }
+  if (!text) throw new Error("AI failed");
 
-  const date = new Date().toISOString().split("T")[0];
+  // ⏱ TIME SYSTEM
+  const now = new Date();
+  const timestamp = now.getTime();
+  const date = now.toISOString().split("T")[0];
 
   const title = generateTitle(topic);
   const slug = slugify(title);
 
   const payload = {
     date,
+    timestamp,
     topic,
     title,
     slug,
     text
   };
 
-  // 💾 save
-  fs.writeFileSync(`content/${date}.json`, JSON.stringify(payload, null, 2));
-  fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
+  // 💾 unique content file
+  fs.writeFileSync(
+    `content/${timestamp}.json`,
+    JSON.stringify(payload, null, 2)
+  );
 
+  // 🌐 always latest content
+  fs.writeFileSync(
+    "data.json",
+    JSON.stringify(payload, null, 2)
+  );
+
+  // 📚 history update
   history.push(payload);
   history = history.slice(-30);
 
