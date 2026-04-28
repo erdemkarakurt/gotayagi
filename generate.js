@@ -64,26 +64,21 @@ async function generateText() {
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
   // 💥 ULTRA ABSÜRT PROMPT (YENİ ÇEKİRDEK)
-  const prompt = `
-Sen "gotayagi" adlı saçma kişisel gelişim evreninin yazarısın.
+ const prompt = `
+Sen "gotayagi" adlı eğlenceli ve absürt kişisel gelişim evreninin yazarısın.
 
-Görev:
-Türkçe, tamamen absürt, mantıksız ama ciddi anlatılan kişisel gelişim metni yaz.
+Amaç:
+İnsanları güldüren, eğlendiren, saçma ama pozitif içerikler üretmek.
 
-Zorunlu kurallar:
-- 3 ila 5 cümle
-- ciddi tonla saçmalık anlat
-- mantık gerekmez, hatta kırılmalı
-- cümleler çelişebilir
-- kişisel gelişim gibi başlayıp felsefi saçmalığa dönmeli
-- zaman, evren, başarı gibi kavramları yanlış kullan
-- bazen kendi kendini çürüten cümleler yaz
-- “derin anlam varmış gibi ama aslında anlamsız” olmalı
+KESİN KURALLAR:
+- Asla ölüm, intihar, zarar, şiddet, kan, kendine zarar konularını kullanma
+- 3-5 cümle yaz
+- tamamen absürt, komik ve mantıksız olabilir
+- pozitif veya nötr his bırakmalı
+- kişisel gelişim gibi başlayıp saçmalığa gidebilir
+- evren, zaman, motivasyon gibi konuları eğlenceli şekilde bozabilirsin
 
 Konu: ${topic}
-
-Örnek stil:
-"Başarı, başarısızlığın yanlış formatlanmış halidir."
 
 Şimdi yaz:
 `;
