@@ -1,23 +1,24 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 async function main() {
-    const apiKey = process.env.GEMINI_API_KEY;
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
     try {
         console.log("📡 Model test ediliyor...");
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash-latest",
+            model: "gemini-1.5-flash-latest", // 🔥 KRİTİK FIX
         });
 
-        const result = await model.generateContent("Merhaba");
-        console.log("✅ Bağlantı başarılı!");
-        console.log(result.response.text());
+        const result = await model.generateContent("Saçma ama komik bir söz yaz");
+        const text = result.response.text();
+
+        require("fs").writeFileSync("yazi.txt", text);
+
+        console.log("✅ Yazı üretildi:", text);
 
     } catch (error) {
-        console.error("🔥 HATA DETAYI:");
-        console.error("Mesaj:", error.message);
+        console.error("🔥 HATA:", error.message);
         process.exit(1);
     }
 }
