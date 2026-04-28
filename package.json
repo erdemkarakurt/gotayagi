@@ -4,6 +4,6 @@
   "description": "Otomatik sacmalik uretici",
   "main": "update_quote.js",
   "dependencies": {
-    "@google/genai": "^0.1.2"
+    "@google/generative-ai": "^0.21.0"
   }
 }
