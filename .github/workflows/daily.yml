@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Repo çek
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Node kur
         uses: actions/setup-node@v4
@@ -26,7 +28,7 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
-      - name: Commit + Push
+      - name: Commit + Safe Push
         run: |
           git config user.name "ai-bot"
           git config user.email "bot@example.com"
@@ -35,6 +37,8 @@ jobs:
 
           git diff --cached --quiet || git commit -m "daily content update"
 
-          git pull --rebase origin main
+          git fetch origin
 
-          git push origin main
+          git reset --hard origin/main
+
+          git push origin main --force
