@@ -3,29 +3,31 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const apiKey = process.env.GEMINI_API_KEY;
 
-// AJAN KONTROLÜ: Şifre GitHub'dan geliyor mu?
+// Güvenlik ve varlık kontrolü
 if (!apiKey) {
-    console.error("🔥 HATA: API Anahtarı BOŞ! GitHub Secrets yanlış ayarlanmış.");
+    console.error("🔥 HATA: API Anahtarı GitHub Secrets'tan çekilemedi!");
     process.exit(1);
-} else {
-    console.log(`✅ Şifre algılandı! Uzunluk: ${apiKey.length} karakter. İlk 3 harf: ${apiKey.substring(0, 3)}`);
 }
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
 async function main() {
     try {
+        // En güncel ve stabil Flash model ismini kullanıyoruz
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Sadece sözü ver.";
+        
+        const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Başka hiçbir açıklama yapma. Ekranda tam ortada duracak kısa bir manifesto gibi olsun.";
         
         const result = await model.generateContent(prompt);
-        const quote = result.response.text().trim();
+        const response = await result.response;
+        const quote = response.text().trim();
         
         fs.writeFileSync('yazi.txt', quote);
-        console.log("Yeni saçmalık başarıyla üretildi:", quote);
+        console.log("✅ Başarıyla yeni saçmalık üretildi:", quote);
 
     } catch (error) {
-        console.error("🔥 API Hatası Detayı:", error.message);
+        // Eğer 404 hatası devam ederse hatanın detayını buradan göreceğiz
+        console.error("🔥 Google API Hatası:", error.message);
         process.exit(1); 
     }
 }
