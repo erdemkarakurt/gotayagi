@@ -63,13 +63,29 @@ async function generateText() {
 
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
+  // 💥 ULTRA ABSÜRT PROMPT (YENİ ÇEKİRDEK)
   const prompt = `
-Türkçe absürt kişisel gelişim yazısı yaz.
+Sen "gotayagi" adlı saçma kişisel gelişim evreninin yazarısın.
 
-Kurallar:
-- 3-5 cümle
-- komik, mantıksız, çelişkili
-- konu: ${topic}
+Görev:
+Türkçe, tamamen absürt, mantıksız ama ciddi anlatılan kişisel gelişim metni yaz.
+
+Zorunlu kurallar:
+- 3 ila 5 cümle
+- ciddi tonla saçmalık anlat
+- mantık gerekmez, hatta kırılmalı
+- cümleler çelişebilir
+- kişisel gelişim gibi başlayıp felsefi saçmalığa dönmeli
+- zaman, evren, başarı gibi kavramları yanlış kullan
+- bazen kendi kendini çürüten cümleler yaz
+- “derin anlam varmış gibi ama aslında anlamsız” olmalı
+
+Konu: ${topic}
+
+Örnek stil:
+"Başarı, başarısızlığın yanlış formatlanmış halidir."
+
+Şimdi yaz:
 `;
 
   let text = "";
@@ -86,13 +102,12 @@ Kurallar:
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
-          temperature: 1.2
+          temperature: 1.3
         })
       });
 
       const data = await res.json();
 
-      // 🔥 FULL DEBUG
       console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
 
       if (data?.error) {
