@@ -1,0 +1,34 @@
+name: Gunluk Sacmalik Uretici
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-quote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu Klonla
+        uses: actions/checkout@v3
+
+      - name: Node.js Kur
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Paketleri Yükle
+        run: npm install @google/genai
+
+      - name: Yeni Yaziyi Uret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node update_quote.js
+
+      - name: Degisiklikleri Kaydet
+        run: |
+          git config --global user.name "Gotayagi Bot"
+          git config --global user.email "bot@gotayagi.com"
+          git add yazi.txt
+          git commit -m "Gunun sacmaligi guncellendi" || exit 0
+          git push
