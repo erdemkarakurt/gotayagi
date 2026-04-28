@@ -1,0 +1,14 @@
+<script>
+const files = [
+  "2026-04-29.json",
+  "2026-04-30.json"
+];
+
+const file = files[Math.floor(Math.random() * files.length)];
+
+fetch("content/" + file + "?v=" + Date.now())
+  .then(r => r.json())
+  .then(d => {
+    document.body.innerHTML = "<h2>" + d.text + "</h2>";
+  });
+</script>
