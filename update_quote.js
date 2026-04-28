@@ -8,7 +8,7 @@ async function main() {
         const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Başka hiçbir açıklama yapma. Ekranda tam ortada duracak kısa bir manifesto gibi olsun.";
         
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5',
+            model: 'gemini-2.5-flash',
             contents: prompt,
         });
 
