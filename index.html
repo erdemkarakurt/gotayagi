@@ -2,6 +2,8 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>gotayagi</title>
 
   <style>
@@ -13,30 +15,31 @@
       align-items: center;
       background: #0d0d0d;
       color: white;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
     }
 
     .box {
-      max-width: 700px;
+      max-width: 720px;
     }
 
     #title {
       font-size: 22px;
-      opacity: 0.7;
-      margin-bottom: 15px;
+      opacity: 0.75;
+      margin-bottom: 14px;
     }
 
     #text {
       font-size: 26px;
       line-height: 1.6;
+      transition: opacity 0.3s ease;
     }
 
     #meta {
-      margin-top: 15px;
-      font-size: 14px;
-      opacity: 0.5;
+      margin-top: 16px;
+      font-size: 13px;
+      opacity: 0.45;
     }
   </style>
 </head>
@@ -50,23 +53,43 @@
 </div>
 
 <script>
-async function load() {
+async function loadContent() {
+  const titleEl = document.getElementById("title");
+  const textEl = document.getElementById("text");
+  const metaEl = document.getElementById("meta");
+
   try {
-    const res = await fetch("data.json?v=" + Date.now());
+    // 🔥 cache bypass + güvenli fetch
+    const res = await fetch("data.json?v=" + Date.now(), {
+      cache: "no-store"
+    });
+
+    if (!res.ok) throw new Error("HTTP error");
+
     const d = await res.json();
 
-    document.title = d.title;
+    // 🧠 safety fallback
+    if (!d || !d.text) {
+      throw new Error("Invalid data");
+    }
 
-    document.getElementById("title").innerText = d.title;
-    document.getElementById("text").innerText = d.text;
-    document.getElementById("meta").innerText =
-      `${d.topic} • ${d.date}`;
-  } catch (e) {
-    document.getElementById("text").innerText = "yüklenemedi";
+    // 🎯 dynamic update
+    document.title = d.title || "gotayagi";
+
+    titleEl.innerText = d.title || "başlık yok";
+    textEl.innerText = d.text || "içerik yok";
+    metaEl.innerText = `${d.topic || "unknown"} • ${d.date || ""}`;
+
+  } catch (err) {
+    console.log("LOAD ERROR:", err);
+
+    titleEl.innerText = "hata";
+    textEl.innerText = "içerik yüklenemedi";
+    metaEl.innerText = "";
   }
 }
 
-load();
+loadContent();
 </script>
 
 </body>
