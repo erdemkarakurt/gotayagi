@@ -29,11 +29,24 @@
 <div id="text">yükleniyor...</div>
 
 <script>
-fetch("data.json?v=" + Date.now())
-  .then(r => r.json())
-  .then(d => {
-    document.getElementById("text").innerText = d.text;
-  });
+async function loadText() {
+  try {
+    const res = await fetch("data.json?v=" + Date.now());
+
+    if (!res.ok) throw new Error("JSON load failed");
+
+    const data = await res.json();
+
+    document.getElementById("text").innerText =
+      data.text || "Evren bugün sessiz kaldı.";
+  } 
+  catch (err) {
+    document.getElementById("text").innerText =
+      "Sistem geçici olarak saçmalıyor...";
+  }
+}
+
+loadText();
 </script>
 
 </body>
