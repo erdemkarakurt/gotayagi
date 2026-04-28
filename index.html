@@ -127,23 +127,24 @@ draw();
 ========================= */
 
 async function load() {
-  const url = "data.json?t=" + Date.now();
+  const url = "data.json?v=" + Date.now();
 
   const res = await fetch(url, {
     cache: "no-store",
     headers: {
-      "Cache-Control": "no-cache"
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
     }
   });
 
   const d = await res.json();
 
-  console.log("LOADED DATA:", d); // 🔥 DEBUG
+  console.log("LOADED:", d);
 
-  document.title = d.title || "gotayagi";
-  document.getElementById("title").innerText = d.title || "";
-  document.getElementById("text").innerText = d.text || "";
-  document.getElementById("meta").innerText = `${d.topic || ""} • ${d.date || ""}`;
+  document.title = d.title;
+  document.getElementById("title").innerText = d.title;
+  document.getElementById("text").innerText = d.text;
+  document.getElementById("meta").innerText = `${d.topic} • ${d.date}`;
 }
 
 load();
