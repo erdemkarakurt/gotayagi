@@ -14,7 +14,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 async function main() {
     try {
         // En güncel ve stabil Flash model ismini kullanıyoruz
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
         
         const prompt = "Bana komik, saçma sapan, mantıksız cümlelerden oluşan, yarı komik bir kişisel gelişim sözü yaz. Başka hiçbir açıklama yapma. Ekranda tam ortada duracak kısa bir manifesto gibi olsun.";
         
