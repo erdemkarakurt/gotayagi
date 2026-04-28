@@ -2,6 +2,11 @@ const fs = require("fs");
 
 const API_KEY = process.env.GROQ_API_KEY;
 
+// 🔥 FIX: klasör yoksa oluştur
+if (!fs.existsSync("content")) {
+  fs.mkdirSync("content", { recursive: true });
+}
+
 async function generateText() {
   const topics = [
     "başarı", "tembellik", "zenginlik", "motivasyon",
@@ -46,10 +51,7 @@ Kurallar:
     text
   };
 
-  // 📌 1. günlük dosya
   fs.writeFileSync(`content/${date}.json`, JSON.stringify(payload, null, 2));
-
-  // 📌 2. ana dosya
   fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
 }
 
