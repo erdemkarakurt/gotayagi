@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Götayağı - Günlük Doz</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #fcfcfc;
-            font-family: 'Courier New', Courier, monospace;
-            color: #111;
-            text-align: center;
-            padding: 20px;
-        }
-        #quote-container {
-            max-width: 800px;
-            font-size: 2.5rem;
-            line-height: 1.4;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>gotayagi</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0d0d0d;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #text {
+      font-size: 26px;
+      max-width: 700px;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="quote-container">
-        Evrenle bağlantı kuruluyor...
-    </div>
+<div id="text">yükleniyor...</div>
 
-    <script>
-        const today = new Date().toISOString().split('T')[0];
-        fetch(`yazi.txt?v=${today}`)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('quote-container').innerText = data;
-            })
-            .catch(error => {
-                document.getElementById('quote-container').innerText = "Bugün kişisel gelişim için fazla yorgunuz. Yarın gel.";
-            });
-    </script>
+<script>
+fetch("data.json")
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById("text").innerText = d.text;
+  });
+</script>
 
 </body>
 </html>
