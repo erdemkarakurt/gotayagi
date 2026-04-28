@@ -2,7 +2,7 @@ name: Daily AI Writer
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # her gün 00:00
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Repo çek
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Node kur
         uses: actions/setup-node@v3
@@ -19,17 +21,22 @@ jobs:
           node-version: 18
 
       - name: Bağımlılık kur
-        run: npm install node-fetch
+        run: npm install
 
       - name: AI yazı üret
         run: node generate.js
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
-      - name: Commit et
+      - name: Commit + Push (güvenli)
         run: |
           git config user.name "ai-bot"
           git config user.email "bot@example.com"
+
           git add data.json
-          git commit -m "daily content update"
-          git push
+
+          git diff --cached --quiet || git commit -m "daily content update"
+
+          git pull --rebase origin main
+
+          git push origin main
