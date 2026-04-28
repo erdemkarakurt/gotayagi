@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>gotayagi</title>
 
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #0d0d0d;
-      color: white;
+      overflow: hidden;
+      background: black;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
+      color: white;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
     .box {
-      max-width: 720px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      max-width: 750px;
+      z-index: 2;
+      padding: 20px;
+      backdrop-filter: blur(3px);
     }
 
     #title {
-      font-size: 22px;
-      opacity: 0.75;
-      margin-bottom: 14px;
+      font-size: 20px;
+      opacity: 0.7;
+      margin-bottom: 15px;
     }
 
     #text {
-      font-size: 26px;
+      font-size: 28px;
       line-height: 1.6;
-      transition: opacity 0.3s ease;
+      text-shadow: 0 0 15px rgba(255,255,255,0.2);
     }
 
     #meta {
-      margin-top: 16px;
+      margin-top: 15px;
       font-size: 13px;
-      opacity: 0.45;
+      opacity: 0.4;
     }
   </style>
 </head>
 
 <body>
+
+<canvas id="space"></canvas>
 
 <div class="box">
   <div id="title">yükleniyor...</div>
@@ -53,43 +66,86 @@
 </div>
 
 <script>
-async function loadContent() {
-  const titleEl = document.getElementById("title");
-  const textEl = document.getElementById("text");
-  const metaEl = document.getElementById("meta");
+/* =========================
+   🌌 KARA DELİK UZAY EFEKTİ
+========================= */
 
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const stars = Array.from({ length: 400 }, () => ({
+  x: Math.random() * w - w/2,
+  y: Math.random() * h - h/2,
+  z: Math.random() * w
+}));
+
+function draw() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.save();
+  ctx.translate(w/2, h/2);
+
+  for (let s of stars) {
+    s.z -= 2;
+
+    if (s.z <= 0) {
+      s.x = Math.random() * w - w/2;
+      s.y = Math.random() * h - h/2;
+      s.z = w;
+    }
+
+    const k = 128 / s.z;
+    const x = s.x * k;
+    const y = s.y * k;
+
+    const size = (1 - s.z / w) * 3;
+
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
+
+  ctx.restore();
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+/* =========================
+   📦 DATA LOAD
+========================= */
+
+async function load() {
   try {
-    // 🔥 cache bypass + güvenli fetch
     const res = await fetch("data.json?v=" + Date.now(), {
       cache: "no-store"
     });
 
-    if (!res.ok) throw new Error("HTTP error");
-
     const d = await res.json();
 
-    // 🧠 safety fallback
-    if (!d || !d.text) {
-      throw new Error("Invalid data");
-    }
+    document.title = d.title;
 
-    // 🎯 dynamic update
-    document.title = d.title || "gotayagi";
+    document.getElementById("title").innerText = d.title;
+    document.getElementById("text").innerText = d.text;
+    document.getElementById("meta").innerText = `${d.topic} • ${d.date}`;
 
-    titleEl.innerText = d.title || "başlık yok";
-    textEl.innerText = d.text || "içerik yok";
-    metaEl.innerText = `${d.topic || "unknown"} • ${d.date || ""}`;
-
-  } catch (err) {
-    console.log("LOAD ERROR:", err);
-
-    titleEl.innerText = "hata";
-    textEl.innerText = "içerik yüklenemedi";
-    metaEl.innerText = "";
+  } catch (e) {
+    document.getElementById("text").innerText = "yüklenemedi";
   }
 }
 
-loadContent();
+load();
 </script>
 
 </body>
