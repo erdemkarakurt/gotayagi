@@ -1,14 +1,11 @@
 const fs = require("fs");
 
-// API anahtarını GitHub Secrets'tan GROQ_API_KEY olarak eklediğinden emin ol
 const API_KEY = process.env.GROQ_API_KEY;
 
-// 📁 Klasör garantisi
 if (!fs.existsSync("content")) {
   fs.mkdirSync("content", { recursive: true });
 }
 
-// 📦 Geçmiş kaydı (Aynı şeyleri tekrar etmemek için)
 const historyFile = "content/history.json";
 let history = [];
 if (fs.existsSync(historyFile)) {
@@ -19,17 +16,6 @@ if (fs.existsSync(historyFile)) {
   }
 }
 
-// 🔥 URL dostu isim üretici
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
-    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-// 🔥 Absürt Başlık Üretici
 function generateTitle(topic) {
   const patterns = [
     `${topic} ve kuantum evrenindeki terliksiz gezi rehberi`,
@@ -41,48 +27,34 @@ function generateTitle(topic) {
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
 
-// ❌ Tekrar kontrolü
-function isDuplicate(text) {
-  return history.some(h => h.text === text);
-}
-
-// 🧠 Filtre (Sistemci önlemi)
-function isUnsafe(text) {
-  const banned = ["intihar", "ölüm", "şiddet", "kan"];
-  const lower = text.toLowerCase();
-  return banned.some(w => lower.includes(w));
-}
-
 async function generateText() {
   if (!API_KEY) {
     console.error("🔥 GROQ_API_KEY eksik!");
     process.exit(1);
   }
 
-  const topics = ["domates soymak", "boş duvara bakmak", "çorap eşleştirmek", "otobüs beklemek", "tavanla konuşmak", "USB takmaya çalışmak"];
+  const topics = ["domates soymak", "boş duvara bakmak", "çorap eşleştirmek", "otobüs beklemek", "tavanla konuşmak", "USB takmaya çalışmak", "yoğurt kabına yemek koymak"];
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 💥 ABSÜRT PROMPT: Burayı özellikle "mantıksızlık" üzerine kurguladım
+  // PROMPT: Türkçe karakter hassasiyeti eklendi
   const prompt = `
-  Sen dünyanın en mantıksız kişisel gelişim uzmanısın. 
+  Sen dünyanın en mantıksız ve absürt kişisel gelişim uzmanısın. 
   Konumuz: ${topic}
   
   GÖREV:
-  - Birbirinden tamamen alakasız iki kavramı birleştir.
-  - Önce çok ciddi bir tavsiye veriyormuş gibi başla, sonra cümleyi saçmalaştır.
-  - Cümleler "yarı komik" ve "ne alakası var şimdi" dedirtecek türde olmalı.
-  - Maksimum 2 kısa cümle.
-  - Örnek: "Sabahları erken kalkmak ruhunu dinlendirir çünkü buzdolabının ışığı sadece sen bakmadığında söner. Ayakkabılarını ters giy ki evren seni takip edemesin."
+  - Ciddi bir tavsiye ile başla, tamamen alakasız ve saçma bir kavramla bitir.
+  - Maksimum 2-3 kısa cümle yaz.
+  - Kesinlikle TÜRKÇE karakterleri düzgün kullan (ğ, ş, i, ç, ö, ü).
+  - Kelime uydurma, gerçek kelimelerle saçmala.
+  - Örnek: "Sabahları erken kalkmak ruhunu dinlendirir çünkü buzdolabının ışığı sadece sen bakmadığında söner."
 
-  Şimdi en saçma manifestonu yaz:
+  Şimdi absürt manifestonu yaz:
   `;
 
-  let text = "";
   let tries = 0;
-
   while (tries < 3) {
     try {
-     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${API_KEY}`,
@@ -91,49 +63,41 @@ async function generateText() {
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
-          temperature: 1.5, 
-          max_tokens: 250, // 100'den 250'ye çıkardık, artık yarım kalmaz
-          top_p: 1 // Çeşitliliği koruyalım
+          temperature: 1.1, // 1.5 ÇOK YÜKSEK, 1.1 "kontrollü saçmalama" sağlar
+          max_tokens: 400,  // Yarım kalmaması için alanı genişlettik
+          top_p: 0.9        // Daha tutarlı kelime seçimi
         })
       });
 
       const data = await res.json();
-      const content = data?.choices?.[0]?.message?.content?.replace(/"/g, ''); // Tırnakları temizle
+      let content = data?.choices?.[0]?.message?.content?.replace(/"/g, '').trim();
 
-      if (content && !isUnsafe(content) && !isDuplicate(content)) {
-        text = content.trim();
-        break;
+      if (content && content.length > 10) {
+        // Veriyi kaydetme aşaması
+        const now = new Date();
+        const payload = {
+          date: now.toISOString().split("T")[0],
+          timestamp: now.getTime(),
+          topic,
+          title: generateTitle(topic),
+          text: content
+        };
+
+        fs.writeFileSync(`content/${payload.timestamp}.json`, JSON.stringify(payload, null, 2));
+        fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
+        
+        history.push(payload);
+        fs.writeFileSync(historyFile, JSON.stringify(history.slice(-30), null, 2));
+        
+        console.log("✅ Yeni saçmalık yayında:", content);
+        return; 
       }
       tries++;
     } catch (err) {
-      console.error("Bağlantı hatası:", err.message);
+      console.error("Hata:", err.message);
       tries++;
     }
   }
-
-  if (!text) {
-    console.error("AI içerik üretemedi.");
-    process.exit(1);
-  }
-
-  const now = new Date();
-  const payload = {
-    date: now.toISOString().split("T")[0],
-    timestamp: now.getTime(),
-    topic,
-    title: generateTitle(topic),
-    text
-  };
-
-  // 💾 Dosyaları kaydet
-  fs.writeFileSync(`content/${payload.timestamp}.json`, JSON.stringify(payload, null, 2));
-  fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
-
-  // 📚 Geçmişi güncelle (Son 30 kayıt)
-  history.push(payload);
-  fs.writeFileSync(historyFile, JSON.stringify(history.slice(-30), null, 2));
-
-  console.log("✅ Yeni saçmalık yayında:", text);
 }
 
 generateText();
