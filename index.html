@@ -42,29 +42,40 @@
       border: 1px solid rgba(255,255,255,0.1);
       backdrop-filter: blur(6px);
       border-radius: 16px;
-      padding: 20px;
+      padding: 30px 20px;
       text-align: center;
+    }
+
+    /* LOGO STİLİ */
+    .brand-logo {
+      width: 100%;
+      max-width: 220px; /* Logonun çok büyük olmaması için */
+      height: auto;
+      margin-bottom: 25px;
+      display: inline-block;
     }
 
     #title {
       font-size: clamp(16px, 4vw, 22px);
       opacity: 0.75;
       margin-bottom: 12px;
+      font-weight: 300;
     }
 
     #text {
       font-size: clamp(18px, 5vw, 26px);
       line-height: 1.5;
-
       white-space: pre-wrap;
       word-break: break-word;
       overflow-wrap: anywhere;
+      font-weight: bold;
     }
 
     #meta {
-      margin-top: 12px;
+      margin-top: 15px;
       font-size: 12px;
       opacity: 0.5;
+      letter-spacing: 1px;
     }
   </style>
 </head>
@@ -75,6 +86,8 @@
 
 <div class="center-box">
   <div class="card-ui">
+    <img src="logogt.png" alt="gotayagi logo" class="brand-logo">
+    
     <div id="title">yükleniyor...</div>
     <div id="text">...</div>
     <div id="meta"></div>
@@ -83,12 +96,10 @@
 
 <script>
 /* =========================
-   🌌 STARFIELD
+    🌌 STARFIELD
 ========================= */
-
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-
 let w, h;
 
 function resize() {
@@ -107,67 +118,51 @@ const stars = Array.from({ length: 300 }, () => ({
 function draw() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, w, h);
-
   ctx.save();
   ctx.translate(w / 2, h / 2);
 
   for (let s of stars) {
     s.z -= 2;
-
     if (s.z <= 0) {
       s.x = Math.random() * w - w / 2;
       s.y = Math.random() * h - h / 2;
       s.z = w;
     }
-
     const k = 120 / s.z;
     const x = s.x * k;
     const y = s.y * k;
-
     const size = Math.max(0.5, (1 - s.z / w) * 2.5);
-
     ctx.beginPath();
     ctx.arc(x, y, size, 0, Math.PI * 2);
     ctx.fillStyle = "white";
     ctx.fill();
   }
-
   ctx.restore();
   requestAnimationFrame(draw);
 }
-
 draw();
 
 /* =========================
-   📦 SAFE LOADER (FIXED)
+    📦 SAFE LOADER
 ========================= */
-
 async function load() {
   try {
     const res = await fetch("data.json?v=" + Date.now(), {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache",
-        "Pragma": "no-cache"
-      }
+      cache: "no-store"
     });
-
-    const text = await res.text();
-    const d = JSON.parse(text);
+    const d = await res.json();
 
     if (!d?.title || !d?.text) throw new Error("invalid data");
 
     document.title = d.title;
     document.getElementById("title").innerText = d.title;
     document.getElementById("text").innerText = d.text;
-    document.getElementById("meta").innerText = `${d.topic} • ${d.date}`;
+    document.getElementById("meta").innerText = `${d.topic.toUpperCase()} • ${d.date}`;
 
   } catch (e) {
     console.log("LOAD ERROR:", e);
-
-    document.getElementById("title").innerText = "hata";
-    document.getElementById("text").innerText = "veri yüklenemedi";
-    document.getElementById("meta").innerText = "";
+    document.getElementById("title").innerText = "Hata";
+    document.getElementById("text").innerText = "Veri şu an ulaşılamaz durumda.";
   }
 }
 
