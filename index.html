@@ -5,54 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>gotayagi</title>
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: black;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
+ <style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: Arial, sans-serif;
+    color: white;
+  }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
 
-    .box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      max-width: 750px;
-      z-index: 2;
-      padding: 20px;
-      backdrop-filter: blur(3px);
-    }
+  .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 
-    #title {
-      font-size: 20px;
-      opacity: 0.7;
-      margin-bottom: 15px;
-    }
+    width: min(90vw, 750px);
+    padding: 20px;
 
-    #text {
-      font-size: 28px;
-      line-height: 1.6;
-      text-shadow: 0 0 15px rgba(255,255,255,0.2);
-    }
+    z-index: 2;
+    backdrop-filter: blur(3px);
+  }
 
-    #meta {
-      margin-top: 15px;
-      font-size: 13px;
-      opacity: 0.4;
-    }
-  </style>
+  #title {
+    font-size: clamp(16px, 3.5vw, 22px);
+    opacity: 0.7;
+    margin-bottom: 15px;
+  }
+
+  #text {
+    font-size: clamp(18px, 5vw, 28px);
+    line-height: 1.5;
+
+    /* 🔥 MOBİLDE TAŞMAYI KESEN KRİTİK AYAR */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
+  #meta {
+    margin-top: 15px;
+    font-size: clamp(11px, 2.5vw, 13px);
+    opacity: 0.4;
+  }
+</style>
 </head>
 
 <body>
