@@ -82,7 +82,7 @@ async function generateText() {
 
   while (tries < 3) {
     try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${API_KEY}`,
@@ -91,8 +91,9 @@ async function generateText() {
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
-          temperature: 1.5, // Yaratıcılığı (ve saçmalamayı) tavana vurdurduk
-          max_tokens: 100
+          temperature: 1.5, 
+          max_tokens: 250, // 100'den 250'ye çıkardık, artık yarım kalmaz
+          top_p: 1 // Çeşitliliği koruyalım
         })
       });
 
