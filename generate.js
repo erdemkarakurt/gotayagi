@@ -2,7 +2,6 @@ const fs = require("fs");
 
 const API_KEY = process.env.GROQ_API_KEY;
 
-// 📁 Klasör ve Geçmiş Yönetimi
 if (!fs.existsSync("content")) fs.mkdirSync("content", { recursive: true });
 
 const historyFile = "content/history.json";
@@ -13,46 +12,45 @@ if (fs.existsSync(historyFile)) {
   } catch { history = []; }
 }
 
-// 🔥 Başlık Üretici (İnanç eksenli ve vakur ama absürt)
 function generateTitle(topic) {
   const patterns = [
-    `${topic}: Nasibin cilvesi mi yoksa sadece bir dalgınlık mı?`,
-    `${topic} üzerine bir tevazu denemesi`,
-    `${topic} ve sabrın sonundaki o görünmez selam`,
-    `${topic} yaparken aniden gelen o küçük ibret`,
-    `${topic}: İnsanın kendi acizliğiyle imtihanı`
+    `${topic}: Nasibin cilvesi mi yoksa bir imtihan mı?`,
+    `${topic} ve insanın kendiyle olan bitmeyen davası`,
+    `${topic} üzerine bir nükte ve bin bir ibret`,
+    `${topic}: Dalgın ruhlar için hayatta kalma rehberi`,
+    `${topic} yaparken aniden gelen o küçük uyanış`
   ];
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
 
 async function generateText() {
   if (!API_KEY) {
-    console.error("🔥 HATA: GROQ_API_KEY bulunamadı!");
+    console.error("🔥 HATA: GROQ_API_KEY eksik!");
     process.exit(1);
   }
 
-  // 🍎 Konular (Mutfaktan sokağa, tamamen hayatın içinden)
   const topics = [
-    "soğuyan çay", "kaybolan anahtarlar", "pazar sabahı", 
-    "eskiyen ayakkabı", "komşunun ikramı", "yağmura yakalanmak", 
-    "yarım kalan uyku", "bayram temizliği", "beklenen misafir",
-    "kapanmayan bavul", "yol sormak", "pencereden dışarı bakmak"
+    "soğuyan çay", "kaybolan anahtarlar", "tek kalan çoraplar", 
+    "açılmayan kavanoz kapağı", "boş cüzdan", "bayram temizliği", 
+    "yol sormak", "pazar sabahı uyanmak", "ayakkabı sıkması",
+    "yarım kalan rüyalar", "yanlışlıkla atılan mesajlar", "durak kaçırmak"
   ];
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 🧠 Sistem Rolü: Vakur ve Hikmetli Absürt Filozof
+  // 🧠 SİSTEM ROLÜ: Nüktedan ve "Ters Köşe" Yapan Bilge
   const messages = [
     {
       role: "system",
-      content: `Sen "Göt Ayağı" sitesinin, inançlı ve geleneksel değerlere saygılı, hafif nüktedan bir filozofusun. 
-      Tarzın: Derin bir ahlaki giriş yap veya insanın acizliğini hatırlat; metni tamamen alakasız, gündelik ve absürt bir tavsiye ile bitir. 
-      Hassasiyet: İnançlı insanlara hitap ediyorsun. Dini değerlerle veya ibadetlerle asla alay etme. 
-      Yasaklar: "Evrenin sırrı", "Enerji", "Kuantum", "Yıldızlar" gibi New Age veya seküler klişeleri asla kullanma. 
-      Kurallar: Maksimum 2-3 kısa cümle. Türkçe karakterlere dikkat et.`
+      content: `Sen "Göt Ayağı" sitesinin nüktedan ve hafif çatlak bir filozofusun. 
+      Tarzın: Çok ağırbaşlı ve hikmetli bir cümleyle başla; sonra durumu öyle bir 'ters köşe' yap ki absürt ve komik olsun. 
+      Kitle: İnançlı ve geleneksel insanlar. 
+      Kurallar: Değerlerle asla dalga geçme, insanın kendi sakarlığı ve dünya telaşıyla dalga geç. 
+      KESİNLİKLE YASAKLAR: "Evren", "Sır", "Enerji", "Kuantum", "Yıldızlar" gibi ifadeleri asla kullanma. 
+      Örnek: "Çayının soğuması nasibinin kesilmesi değil, hayatın sana 'biraz dur da etrafına bak' deme şeklidir. Sen yine de çayı dökme, içine biraz sıcak su ekle; israf da bir nevi nasipsizliktir."`
     },
     {
       role: "user",
-      content: `Konu: ${topic}. Bugünün aydınlanmasını yaz.`
+      content: `Konu: ${topic}. Bana bugünün 'hikmetli' saçmalığını yaz.`
     }
   ];
 
@@ -68,7 +66,7 @@ async function generateText() {
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: messages,
-          temperature: 0.8, // Daha oturaklı ve kontrollü bir mizah için.
+          temperature: 0.95, // Mizahın "beklenmedik" olması için biraz artırdık
           max_tokens: 300,
           top_p: 1
         })
@@ -89,11 +87,10 @@ async function generateText() {
 
         fs.writeFileSync(`content/${payload.timestamp}.json`, JSON.stringify(payload, null, 2));
         fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
-        
         history.push(payload);
         fs.writeFileSync(historyFile, JSON.stringify(history.slice(-30), null, 2));
         
-        console.log("✅ Yeni içerik:", content);
+        console.log("✅ Yeni nükte yayında:", content);
         return; 
       }
       tries++;
