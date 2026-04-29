@@ -1,13 +1,6 @@
 [
   {
     "date": "2026-04-28",
-    "topic": "başarısızlık",
-    "title": "başarısızlık hakkında kimsenin bilmediği gerçek",
-    "slug": "basarisizlik-hakkinda-kimsenin-bilmedigi-gercek",
-    "text": "\"Başarısızlık, yalnızca bir yolculuğun başlangıç noktasının yanlış hesaplamalar ile doğru hedefe ulaştığı zaman ortaya çıkmaktadır. Bu durum, çöp sevici bir zombi gibi, bir anda ortaya çıkan bir olasılıktır; fakat aynı zamanda her bir başarısızlık, kendi derin derinlemi içinde, aslında bir tür başarını barındırmaktadır; ve sadece bu bilgiyi fark etmek için, dünyanın en uzak köşesine gitmenize bile gerek yok...\""
-  },
-  {
-    "date": "2026-04-28",
     "topic": "tembellik",
     "title": "tembellik ve evrenin gizli düzeni",
     "slug": "tembellik-ve-evrenin-gizli-duzeni",
@@ -216,5 +209,12 @@
     "topic": "boş cüzdan",
     "title": "boş cüzdan: Nasibin cilvesi mi yoksa bir imtihan mı?",
     "text": "Ey kardeşim! Boş cüzdanın sahibi olduğunda, Allah sana bir müjdeye vesile oluyor. Senin cüzdanındaki boşluklar, aslında içinde sakladığı çok büyük bir gerçekliği yansıtıyor: senin içinde boş bir ruh olduğunu söyleyemediğim için, Allah sana bir başka boşluktan bahsetmektesin."
+  },
+  {
+    "date": "2026-04-29",
+    "timestamp": 1777425693209,
+    "topic": "boş cüzdan",
+    "title": "boş cüzdan ve insanın dünya telaşıyla olan davası",
+    "text": "Göklerin biricik haritası, cüzdanın kapağındır. Biricik cennet, cüzdanın içinde saklıdır. Lakin o haritayı bulamayan ve cenneti keşfeden kimse, boş cüzdanın acıklı hükmünü anlayabilir. İşte bu, hayatın en önemli dersidir: Para kaybolduğunda, cennet de kayıp eder.\n\nFakat bu kayıp, cenneti ararken yaptığımız hatalara da bir cevap verir. Çaresizlik karşısında, bazen bir çöpü bir milyon TL gibi görmenin bile bir mucizesi vardır. İnsanlık, bu muhteşem mucizeye ulaştığında, cüzdanın içi bile boş olur... ama cennet, yine de orada kalır."
   }
 ]
