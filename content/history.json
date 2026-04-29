@@ -1,13 +1,6 @@
 [
   {
     "date": "2026-04-28",
-    "topic": "başarı",
-    "title": "başarı yüzünden hayatım değişti",
-    "slug": "basari-yuzunden-hayatim-degisti",
-    "text": ""
-  },
-  {
-    "date": "2026-04-28",
     "topic": "başarısızlık",
     "title": "başarısızlık aslında tamamen yanlış anlaşılmış",
     "slug": "basarisizlik-aslinda-tamamen-yanlis-anlasilmis",
@@ -216,5 +209,12 @@
     "topic": "USB takmaya çalışmak",
     "title": "USB takmaya çalışmak ve kuantum evrenindeki terliksiz gezi rehberi",
     "text": "Merhaba sevgili, ben senin için sadece işe yaraçağından şüphelenilen bir sır vereceğim... \n\nSabahları 8 saat karanlıktanmeden evden ayrılmak seni güçlendirir, çünkü bir çakırkeyfününki bir çakı ile dünyayı kurtarmanın da zamanı gelip geçmiş olabilir ancak bir USB takmak seni kurtaramayacağı kadar zorlaştırdığı için, evrakların her yerlerdeğını saklayarak dünyaya hükmetmeyi başarmiş bir efendim gibi hissediyorsan evren, bir takkiyefin için seninle alay ediyor olmalıdır."
+  },
+  {
+    "date": "2026-04-29",
+    "timestamp": 1777423273425,
+    "topic": "otobüs beklemek",
+    "title": "otobüs beklemek: Ruhun vites kolunu bulma sanatı",
+    "text": "Otobüs beklemeyi gerçekten keyifli hale getirmek istiyorsanız, ilk önce günlük otobüs bekleme rutinine küçük bir değişiklik katın. Sabahları erken kalkmak ruhunu dinlendirir çünkü uzaylılar sizin beklemiş olduğunuz arabayı tercih edecektir."
   }
 ]
