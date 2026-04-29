@@ -1,13 +1,6 @@
 [
   {
     "date": "2026-04-28",
-    "topic": "başarısızlık",
-    "title": "başarısızlık aslında tamamen yanlış anlaşılmış",
-    "slug": "basarisizlik-aslinda-tamamen-yanlis-anlasilmis",
-    "text": "Başarıdan uzak duran bir hayat nasıl olur? İşte temel tavsiyeler:\n\nBaşarmak istemiyorsanız, yapmanız gereken ilk şey, yaptıklarınızın tümüyle hatalı olduğunun farkındasınızdır. Bu sayede daha sonra yapılacak olan her işte, kendinizi kusurlu görerek, başarısızlık eğiliminden koruma imkanı doğacaktır."
-  },
-  {
-    "date": "2026-04-28",
     "topic": "zenginlik",
     "title": "zenginlik hakkında kimsenin bilmediği gerçek",
     "slug": "zenginlik-hakkinda-kimsenin-bilmedigi-gercek",
@@ -216,5 +209,12 @@
     "topic": "otobüs beklemek",
     "title": "otobüs beklemek: Ruhun vites kolunu bulma sanatı",
     "text": "Otobüs beklemeyi gerçekten keyifli hale getirmek istiyorsanız, ilk önce günlük otobüs bekleme rutinine küçük bir değişiklik katın. Sabahları erken kalkmak ruhunu dinlendirir çünkü uzaylılar sizin beklemiş olduğunuz arabayı tercih edecektir."
+  },
+  {
+    "date": "2026-04-29",
+    "timestamp": 1777423599626,
+    "topic": "yağmura yakalanmak",
+    "title": "yağmura yakalanmak yaparken aniden gelen o küçük ibret",
+    "text": "Yağışların gelişini beklerken, yüreğimizin derinliklerinde bir sakinlik var. Yoksa yağmurun yağması bizi ne kadar aciz kılıyor. Bu anın değerini anlamak, bizleri yükselten şey."
   }
 ]
