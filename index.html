@@ -17,178 +17,87 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0;
-      overflow: hidden;
-      background: black;
+      margin: 0; overflow: hidden; background: black;
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      color: white;
-      height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: white; height: 100dvh; display: flex; justify-content: center; align-items: center;
     }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+    canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
 
-    /* 🔊 YENİ: YÜZEN SESLİ DİNLE BUTONU STİLİ */
     #btn-dinle {
-      display: none; /* Veri yüklenene kadar gizli */
-      position: fixed;
-      top: 20px; /* Ekranın en tepesinden boşluk */
-      left: 50%;
-      transform: translateX(-50%); /* Tam yatay ortalama */
-      z-index: 100; /* Her şeyin üstünde durması için */
-      
-      /* Şeffaf ve Cam Efekti */
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      
-      color: rgba(255, 255, 255, 0.7); /* Yazı da hafif şeffaf */
-      border-radius: 50px; /* Hap şeklinde */
-      padding: 10px 22px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      color: rgba(255, 255, 255, 0.7); border-radius: 50px; padding: 10px 22px;
+      font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s ease;
     }
 
-    #btn-dinle:active {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateX(-50%) scale(0.95);
-      color: white;
-    }
-
-    /* Kart ve İçerik Düzenlemeleri */
-    .center-box {
-      position: relative;
-      z-index: 2;
-      width: 90%;
-      max-width: 500px;
-      padding: 10px;
-      margin-top: 40px; /* Tepedeki butona yer açmak için */
-    }
-
+    .center-box { position: relative; z-index: 2; width: 90%; max-width: 500px; padding: 10px; margin-top: 40px; }
     .card-ui {
-      width: 100%;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border-radius: 30px;
-      padding: 35px 25px;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px;
+      padding: 35px 25px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
     }
 
-    .brand-logo {
-      width: 100%;
-      max-width: 160px;
-      height: auto;
-      margin-bottom: 25px;
-      display: inline-block;
-      opacity: 0.9;
-    }
+    .brand-logo { width: 100%; max-width: 160px; height: auto; margin-bottom: 25px; display: inline-block; opacity: 0.9; }
+    #title { font-size: clamp(12px, 3.5vw, 14px); opacity: 0.4; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2.5px; }
+    #text { font-size: clamp(19px, 6vw, 28px); line-height: 1.35; font-weight: 700; color: #ffffff; margin-bottom: 0; }
+    #meta { margin-top: 25px; font-size: 10px; opacity: 0.25; text-transform: uppercase; }
 
-    #title {
-      font-size: clamp(12px, 3.5vw, 14px);
-      opacity: 0.4;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 2.5px;
-    }
-
-    #text {
-      font-size: clamp(19px, 6vw, 28px);
-      line-height: 1.35;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 0; /* Buton gittiği için alt boşluğu sıfırladık */
-    }
-
-    #meta {
-      margin-top: 25px;
-      font-size: 10px;
-      opacity: 0.25;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+    /* YouTube Player'ı tamamen gizlemek için */
+    #yt-player { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; }
   </style>
 </head>
 
-<body>
-
-<canvas id="space"></canvas>
-
-<button id="btn-dinle" onclick="sesliOku()">🔊 SESLİ DİNLE</button>
+<body onclick="startMusic()"> <canvas id="space"></canvas>
+<div id="yt-player"></div> <button id="btn-dinle" onclick="sesliOku(event)">🔊 SESLİ DİNLE</button>
 
 <div class="center-box">
   <main class="card-ui">
-    <img src="content/logogt1.png" alt="götayağı logo" class="brand-logo">
-    
+    <img src="content/logogt1.png" alt="logo" class="brand-logo">
     <div id="title">yükleniyor...</div>
-    <div id="text">Nükte yüklenirken lütfen bekleyiniz...</div>
-
+    <div id="text">...</div>
     <div id="meta"></div>
   </main>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
-/* =========================
-    🌌 STARFIELD (Arka Plan)
-========================= */
-const canvas = document.getElementById("space");
-const ctx = canvas.getContext("2d");
-let w, h;
+let player;
+let musicStarted = false;
 
-function resize() {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-const stars = Array.from({ length: 180 }, () => ({
-  x: Math.random() * w - w / 2,
-  y: Math.random() * h - h / 2,
-  z: Math.random() * w
-}));
-
-function draw() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, w, h);
-  ctx.save();
-  ctx.translate(w / 2, h / 2);
-
-  for (let s of stars) {
-    s.z -= 1;
-    if (s.z <= 0) {
-      s.x = Math.random() * w - w / 2;
-      s.y = Math.random() * h - h / 2;
-      s.z = w;
+// YouTube API hazır olduğunda çalışır
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('yt-player', {
+    height: '1',
+    width: '1',
+    videoId: '40sTnf6isR0',
+    playerVars: {
+      'autoplay': 0,
+      'controls': 0,
+      'loop': 1,
+      'playlist': '40sTnf6isR0' // Loop için gerekli
+    },
+    events: {
+      'onReady': onPlayerReady
     }
-    const k = 120 / s.z;
-    const size = Math.max(0.1, (1 - s.z / w) * 1.6);
-    ctx.beginPath();
-    ctx.arc(s.x * k, s.y * k, size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.fill();
-  }
-  ctx.restore();
-  requestAnimationFrame(draw);
+  });
 }
-draw();
+
+function onPlayerReady(event) {
+  event.target.setVolume(20); // %20 Ses seviyesi
+}
+
+// Kullanıcı sayfaya ilk tıkladığında müzik başlar
+function startMusic() {
+  if (!musicStarted && player && typeof player.playVideo === 'function') {
+    player.playVideo();
+    musicStarted = true;
+    console.log("🎵 Arka plan müziği %20 sesle başlatıldı.");
+  }
+}
 
 /* =========================
     📦 DATA LOADER & TTS
@@ -197,43 +106,48 @@ async function load() {
   try {
     const res = await fetch("data.json?v=" + Date.now());
     const d = await res.json();
-
-    document.title = "götayağı.com";
     document.getElementById("title").innerText = d.title;
     document.getElementById("text").innerText = d.text;
     document.getElementById("meta").innerText = `${d.topic.toUpperCase()} • ${d.date}`;
-    
-    // Veri gelince dinleme butonunu göster (artık flex veya inline-block)
     document.getElementById("btn-dinle").style.display = "inline-block";
-
-  } catch (e) {
-    document.getElementById("text").innerText = "Henüz yeni bir nükte paylaşılmadı.";
-  }
+  } catch (e) { document.getElementById("text").innerText = "Hata oluştu."; }
 }
 
-function sesliOku() {
+function sesliOku(e) {
+  e.stopPropagation(); // Butona tıklayınca müziği tekrar tetiklemesin
   const metin = document.getElementById("text").innerText;
   const baslik = document.getElementById("title").innerText;
-  const btn = document.getElementById("btn-dinle");
-
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
-    btn.innerText = "🔊 SESLİ DİNLE";
+    document.getElementById("btn-dinle").innerText = "🔊 SESLİ DİNLE";
     return;
   }
-
   const mesaj = new SpeechSynthesisUtterance(baslik + ". " + metin);
   mesaj.lang = 'tr-TR';
-  mesaj.rate = 0.88; // Biraz daha ağırbaşlı bir ton
-  
-  mesaj.onstart = () => { btn.innerText = "⏹ DURDUR"; };
-  mesaj.onend = () => { btn.innerText = "🔊 SESLİ DİNLE"; };
-
+  mesaj.onstart = () => { document.getElementById("btn-dinle").innerText = "⏹ DURDUR"; };
+  mesaj.onend = () => { document.getElementById("btn-dinle").innerText = "🔊 SESLİ DİNLE"; };
   window.speechSynthesis.speak(mesaj);
 }
 
+// Yıldız Arka Planı (Kısaltılmış hali, senin kodundaki aynı kalsın)
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w, h;
+function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener("resize", resize);
+const stars = Array.from({ length: 180 }, () => ({ x: Math.random() * w - w / 2, y: Math.random() * h - h / 2, z: Math.random() * w }));
+function draw() {
+  ctx.fillStyle = "black"; ctx.fillRect(0, 0, w, h); ctx.save(); ctx.translate(w / 2, h / 2);
+  for (let s of stars) {
+    s.z -= 1; if (s.z <= 0) { s.x = Math.random() * w - w / 2; s.y = Math.random() * h - h / 2; s.z = w; }
+    const k = 120 / s.z; const size = Math.max(0.1, (1 - s.z / w) * 1.6);
+    ctx.beginPath(); ctx.arc(s.x * k, s.y * k, size, 0, Math.PI * 2); ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.fill();
+  }
+  ctx.restore(); requestAnimationFrame(draw);
+}
+draw();
 load();
 </script>
-
 </body>
 </html>
