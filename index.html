@@ -46,10 +46,10 @@
       text-align: center;
     }
 
-    /* LOGO STİLİ */
+    /* LOGO STİLİ - Responsive & Path Ayarlı */
     .brand-logo {
       width: 100%;
-      max-width: 220px; /* Logonun çok büyük olmaması için */
+      max-width: 220px;
       height: auto;
       margin-bottom: 25px;
       display: inline-block;
@@ -96,7 +96,7 @@
 
 <script>
 /* =========================
-    🌌 STARFIELD
+    🌌 STARFIELD (Yıldız Alanı)
 ========================= */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
@@ -143,7 +143,7 @@ function draw() {
 draw();
 
 /* =========================
-    📦 SAFE LOADER
+    📦 SAFE LOADER (Veri Yükleyici)
 ========================= */
 async function load() {
   try {
@@ -162,7 +162,7 @@ async function load() {
   } catch (e) {
     console.log("LOAD ERROR:", e);
     document.getElementById("title").innerText = "Hata";
-    document.getElementById("text").innerText = "Veri şu an ulaşılamaz durumda.";
+    document.getElementById("text").innerText = "Manifesto şu an yüklenemedi.";
   }
 }
 
