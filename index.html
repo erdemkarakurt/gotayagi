@@ -2,18 +2,30 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>gotayagi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  
+  <title>götayağı.com</title>
+  <meta property="og:title" content="götayağı.com" />
+  <meta property="og:description" content="Gündelik Hayatın Absürt Manifestoları" />
+  <meta property="og:image" content="https://xn--gtaya-jua50a2e.com/content/logogt1.png" />
+  <meta property="og:url" content="https://xn--gtaya-jua50a2e.com" />
+  <meta property="og:type" content="website" />
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
+    * { box-sizing: border-box; } /* Taşmaları engellemek için IT kuralı */
+
     body {
       margin: 0;
-      overflow: hidden;
+      overflow: hidden; /* Ekranın kaymasını engeller, tek parça görünüm sağlar */
       background: black;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
+      height: 100dvh; /* Mobil tarayıcı barları dahil tam ekran */
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     canvas {
@@ -26,56 +38,56 @@
     }
 
     .center-box {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      position: relative;
       z-index: 2;
-      padding: 15px;
+      width: 90%;
+      max-width: 500px;
+      padding: 10px;
     }
 
     .card-ui {
       width: 100%;
-      max-width: 650px;
-      background: rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.45);
       border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(6px);
-      border-radius: 16px;
-      padding: 30px 20px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 25px 20px;
       text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* LOGO STİLİ - Responsive & Path Ayarlı */
+    /* LOGO: Mobilde ekrana sığması için küçültüldü */
     .brand-logo {
       width: 100%;
-      max-width: 320px;
+      max-width: 180px; /* Mobilde taşmaması için ideal boyut */
       height: auto;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       display: inline-block;
     }
 
     #title {
-      font-size: clamp(16px, 4vw, 22px);
-      opacity: 0.75;
+      font-size: clamp(12px, 3.5vw, 16px);
+      opacity: 0.6;
       margin-bottom: 12px;
-      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
 
     #text {
-      font-size: clamp(18px, 5vw, 26px);
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      font-weight: bold;
+      /* Yazı boyutu ekrana göre otomatik ayarlanır, asla taşmaz */
+      font-size: clamp(18px, 5.5vw, 24px);
+      line-height: 1.4;
+      font-weight: 700;
+      color: #f8f9fa;
+      margin-bottom: 5px;
     }
 
     #meta {
-      margin-top: 15px;
-      font-size: 12px;
-      opacity: 0.5;
-      letter-spacing: 1px;
+      margin-top: 20px;
+      font-size: 10px;
+      opacity: 0.4;
+      text-transform: uppercase;
     }
   </style>
 </head>
@@ -86,7 +98,7 @@
 
 <div class="center-box">
   <div class="card-ui">
-    <img src="content/logogt1.png" alt="gotayagi logo" class="brand-logo">
+    <img src="content/logogt1.png" alt="götayağı logo" class="brand-logo">
     
     <div id="title">yükleniyor...</div>
     <div id="text">...</div>
@@ -109,7 +121,7 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-const stars = Array.from({ length: 300 }, () => ({
+const stars = Array.from({ length: 250 }, () => ({
   x: Math.random() * w - w / 2,
   y: Math.random() * h - h / 2,
   z: Math.random() * w
@@ -122,18 +134,16 @@ function draw() {
   ctx.translate(w / 2, h / 2);
 
   for (let s of stars) {
-    s.z -= 2;
+    s.z -= 1.5;
     if (s.z <= 0) {
       s.x = Math.random() * w - w / 2;
       s.y = Math.random() * h - h / 2;
       s.z = w;
     }
     const k = 120 / s.z;
-    const x = s.x * k;
-    const y = s.y * k;
-    const size = Math.max(0.5, (1 - s.z / w) * 2.5);
+    const size = Math.max(0.1, (1 - s.z / w) * 2);
     ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.arc(s.x * k, s.y * k, size, 0, Math.PI * 2);
     ctx.fillStyle = "white";
     ctx.fill();
   }
@@ -147,22 +157,20 @@ draw();
 ========================= */
 async function load() {
   try {
-    const res = await fetch("data.json?v=" + Date.now(), {
-      cache: "no-store"
-    });
+    const res = await fetch("data.json?v=" + Date.now());
     const d = await res.json();
 
     if (!d?.title || !d?.text) throw new Error("invalid data");
 
-    document.title = d.title;
+    // Sekme başlığını domain olarak sabitliyoruz
+    document.title = "götayağı.com"; 
+    
     document.getElementById("title").innerText = d.title;
     document.getElementById("text").innerText = d.text;
     document.getElementById("meta").innerText = `${d.topic.toUpperCase()} • ${d.date}`;
 
   } catch (e) {
-    console.log("LOAD ERROR:", e);
-    document.getElementById("title").innerText = "Hata";
-    document.getElementById("text").innerText = "Manifesto şu an yüklenemedi.";
+    document.getElementById("text").innerText = "Yeni bir nükte bekleniyor...";
   }
 }
 
