@@ -2,6 +2,7 @@ const fs = require("fs");
 
 const API_KEY = process.env.GROQ_API_KEY;
 
+// 📁 Klasör ve Dosya Kontrolleri
 if (!fs.existsSync("content")) fs.mkdirSync("content", { recursive: true });
 
 const historyFile = "content/history.json";
@@ -12,45 +13,52 @@ if (fs.existsSync(historyFile)) {
   } catch { history = []; }
 }
 
+// 🔥 Başlık Üretici (Vakur ve Geleneksel)
 function generateTitle(topic) {
   const patterns = [
-    `${topic}: Nasibin cilvesi mi yoksa bir imtihan mı?`,
-    `${topic} ve insanın kendiyle olan bitmeyen davası`,
+    `${topic}: Nasibin cilvesi mi yoksa küçük bir imtihan mı?`,
+    `${topic} ve insanın dünya telaşıyla olan davası`,
     `${topic} üzerine bir nükte ve bin bir ibret`,
-    `${topic}: Dalgın ruhlar için hayatta kalma rehberi`,
-    `${topic} yaparken aniden gelen o küçük uyanış`
+    `${topic}: Dalgın zihinler için hikmetli bir not`,
+    `${topic} yaparken aniden gelen o sessiz uyanış`
   ];
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
 
 async function generateText() {
   if (!API_KEY) {
-    console.error("🔥 HATA: GROQ_API_KEY eksik!");
+    console.error("🔥 HATA: GROQ_API_KEY bulunamadı!");
     process.exit(1);
   }
 
+  // 🍎 Konular (Tamamen gündelik ve maddi hayat)
   const topics = [
     "soğuyan çay", "kaybolan anahtarlar", "tek kalan çoraplar", 
     "açılmayan kavanoz kapağı", "boş cüzdan", "bayram temizliği", 
     "yol sormak", "pazar sabahı uyanmak", "ayakkabı sıkması",
-    "yarım kalan rüyalar", "yanlışlıkla atılan mesajlar", "durak kaçırmak"
+    "yarım kalan rüyalar", "yanlışlıkla atılan mesajlar", "durak kaçırmak",
+    "pazardan alınan ekşi elma", "elektrik kesintisi", "bozulan şemsiye"
   ];
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 🧠 SİSTEM ROLÜ: Nüktedan ve "Ters Köşe" Yapan Bilge
+  // 🧠 SİSTEM ROLÜ: Edepli, Hikmetli ve Nüktedan Filozof
   const messages = [
     {
       role: "system",
-      content: `Sen "Göt Ayağı" sitesinin nüktedan ve hafif çatlak bir filozofusun. 
-      Tarzın: Çok ağırbaşlı ve hikmetli bir cümleyle başla; sonra durumu öyle bir 'ters köşe' yap ki absürt ve komik olsun. 
-      Kitle: İnançlı ve geleneksel insanlar. 
-      Kurallar: Değerlerle asla dalga geçme, insanın kendi sakarlığı ve dünya telaşıyla dalga geç. 
-      KESİNLİKLE YASAKLAR: "Evren", "Sır", "Enerji", "Kuantum", "Yıldızlar" gibi ifadeleri asla kullanma. 
-      Örnek: "Çayının soğuması nasibinin kesilmesi değil, hayatın sana 'biraz dur da etrafına bak' deme şeklidir. Sen yine de çayı dökme, içine biraz sıcak su ekle; israf da bir nevi nasipsizliktir."`
+      content: `Sen "Göt Ayağı" sitesinin nüktedan, edebine düşkün ve Anadolu irfanıyla konuşan bir filozofusun. 
+      
+      ÜSLUP VE KURALLAR:
+      1. Giriş: İnsanın dünyadaki acizliğini veya sabrını hatırlatan, vakur ve çok ciddi bir cümleyle başla.
+      2. Ters Köşe: Konuyu öyle bir yere bağla ki, sonuç tamamen gündelik, zararsız ve absürt olsun. 
+      3. Dini Hassasiyet: İnsanların inancıyla, ibadetiyle veya 'ruhuyla' ilgili asla şaka yapma. Kimseye 'ruhun boş' gibi ithamlarda bulunma.
+      4. Yasaklar: "Evren, Sır, Enerji, Kuantum, Yıldızlar, Aydınlanma, Boş Ruh" gibi kelimeleri asla kullanma.
+      5. Odak Noktası: Mizah sadece insanın sakarlığı, unutkanlığı ve eşyalarla olan imkansız mücadelesi üzerine olmalı.
+      
+      ÖRNEK: "Anahtarın kaybolması sabrın bir cilvesidir; lakin kapıda kalmak da bir hikmettir. Sen yine de paspasın altına bakmayı unutma, bazen nasip ayağının ucundadır ama biz uzağa bakarız."`
     },
     {
       role: "user",
-      content: `Konu: ${topic}. Bana bugünün 'hikmetli' saçmalığını yaz.`
+      content: `Konu: ${topic}. Bugünün nükte dolu manifestosunu yaz.`
     }
   ];
 
@@ -66,7 +74,7 @@ async function generateText() {
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: messages,
-          temperature: 0.95, // Mizahın "beklenmedik" olması için biraz artırdık
+          temperature: 0.85, // Kararlı ama yaratıcı
           max_tokens: 300,
           top_p: 1
         })
@@ -85,8 +93,11 @@ async function generateText() {
           text: content
         };
 
+        // Dosyalara yazma işlemi
         fs.writeFileSync(`content/${payload.timestamp}.json`, JSON.stringify(payload, null, 2));
         fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
+        
+        // Geçmişi güncelle (Son 30 kayıt)
         history.push(payload);
         fs.writeFileSync(historyFile, JSON.stringify(history.slice(-30), null, 2));
         
@@ -95,7 +106,7 @@ async function generateText() {
       }
       tries++;
     } catch (err) {
-      console.error("Hata:", err.message);
+      console.error("Bağlantı hatası:", err.message);
       tries++;
     }
   }
