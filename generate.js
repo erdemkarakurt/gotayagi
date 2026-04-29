@@ -1,16 +1,16 @@
 const fs = require("fs");
 
+// API anahtarını GitHub Secrets'tan GROQ_API_KEY olarak eklediğinden emin ol
 const API_KEY = process.env.GROQ_API_KEY;
 
-// 📁 klasör garantisi
+// 📁 Klasör garantisi
 if (!fs.existsSync("content")) {
   fs.mkdirSync("content", { recursive: true });
 }
 
-// 📦 history
+// 📦 Geçmiş kaydı (Aynı şeyleri tekrar etmemek için)
 const historyFile = "content/history.json";
 let history = [];
-
 if (fs.existsSync(historyFile)) {
   try {
     history = JSON.parse(fs.readFileSync(historyFile, "utf-8"));
@@ -19,88 +19,63 @@ if (fs.existsSync(historyFile)) {
   }
 }
 
-// 🔥 slug generator
+// 🔥 URL dostu isim üretici
 function slugify(text) {
   return text
     .toLowerCase()
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ş/g, "s")
-    .replace(/ı/g, "i")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c")
+    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
+    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
 
-// 🔥 title generator (FARKINDALIK TEMALI)
+// 🔥 Absürt Başlık Üretici
 function generateTitle(topic) {
   const patterns = [
-    `${topic} aslında her gün fark etmeden yaptığın bir şey`,
-    `${topic} düşündüğünden daha garip bir sistem olabilir`,
-    `${topic} ve farkında olmadan yaşadığın küçük gerçekler`,
-    `${topic} üzerine düşününce her şey biraz tuhaflaşıyor`,
-    `${topic} sandığın kadar sıradan olmayabilir`
+    `${topic} ve kuantum evrenindeki terliksiz gezi rehberi`,
+    `${topic} yaparken aniden gelen o mantıksız aydınlanma`,
+    `${topic} aslında bir simülasyon hatası mı?`,
+    `${topic} üzerine düşünmek beyni nasıl karbonatlaştırır?`,
+    `${topic}: Ruhun vites kolunu bulma sanatı`
   ];
-
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
 
-// ❌ duplicate check
+// ❌ Tekrar kontrolü
 function isDuplicate(text) {
   return history.some(h => h.text === text);
 }
 
-// 🧠 safety filter
+// 🧠 Filtre (Sistemci önlemi)
 function isUnsafe(text) {
-  const banned = ["intihar", "ölüm", "şiddet", "kendini", "kan"];
+  const banned = ["intihar", "ölüm", "şiddet", "kan"];
   const lower = text.toLowerCase();
   return banned.some(w => lower.includes(w));
 }
 
 async function generateText() {
-  if (!API_KEY) throw new Error("GROQ_API_KEY missing!");
+  if (!API_KEY) {
+    console.error("🔥 GROQ_API_KEY eksik!");
+    process.exit(1);
+  }
 
-  const topics = [
-    "uyanmak",
-    "kahve içmek",
-    "yürümek",
-    "zaman",
-    "telefon",
-    "düşünmek",
-    "nefes almak",
-    "beklemek"
-  ];
-
+  const topics = ["domates soymak", "boş duvara bakmak", "çorap eşleştirmek", "otobüs beklemek", "tavanla konuşmak", "USB takmaya çalışmak"];
   const topic = topics[Math.floor(Math.random() * topics.length)];
 
-  // 💥 FARKINDALIK + ABSÜRT + KOMİK PROMPT
-const prompt = `
-Sen "gotayagi" adlı absürt ve komik farkındalık yazarıısın.
+  // 💥 ABSÜRT PROMPT: Burayı özellikle "mantıksızlık" üzerine kurguladım
+  const prompt = `
+  Sen dünyanın en mantıksız kişisel gelişim uzmanısın. 
+  Konumuz: ${topic}
+  
+  GÖREV:
+  - Birbirinden tamamen alakasız iki kavramı birleştir.
+  - Önce çok ciddi bir tavsiye veriyormuş gibi başla, sonra cümleyi saçmalaştır.
+  - Cümleler "yarı komik" ve "ne alakası var şimdi" dedirtecek türde olmalı.
+  - Maksimum 2 kısa cümle.
+  - Örnek: "Sabahları erken kalkmak ruhunu dinlendirir çünkü buzdolabının ışığı sadece sen bakmadığında söner. Ayakkabılarını ters giy ki evren seni takip edemesin."
 
-AMAÇ:
-İnsanların günlük hayatındaki sıradan şeyleri komik ve düşündürücü şekilde anlatmak.
-
-KURALLAR:
-- SADECE 2 ila 3 cümle yaz
-- cümleler KISA olacak
-- mobil ekranda okunacak şekilde yaz
-- uzun paragraf YASAK
-- gereksiz açıklama YOK
-- komik + hafif felsefi + absürt
-
-STİL:
-- günlük bir olayla başla (${topic})
-- sonra hafif garipleştir
-- sonunda küçük bir “dur bir saniye” hissi bırak
-
-KISIT:
-- uzun metin yok
-- paragraf yok
-- maksimum 3 satır
-
-Şimdi yaz:
-`;
+  Şimdi en saçma manifestonu yaz:
+  `;
 
   let text = "";
   let tries = 0;
@@ -116,73 +91,48 @@ KISIT:
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
-          temperature: 1.35
+          temperature: 1.5, // Yaratıcılığı (ve saçmalamayı) tavana vurdurduk
+          max_tokens: 100
         })
       });
 
       const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content?.replace(/"/g, ''); // Tırnakları temizle
 
-      const content = data?.choices?.[0]?.message?.content;
-
-      if (!content) {
-        tries++;
-        continue;
+      if (content && !isUnsafe(content) && !isDuplicate(content)) {
+        text = content.trim();
+        break;
       }
-
-      if (isUnsafe(content)) {
-        tries++;
-        continue;
-      }
-
-      if (isDuplicate(content)) {
-        tries++;
-        continue;
-      }
-
-      text = content.trim();
-      break;
-
+      tries++;
     } catch (err) {
+      console.error("Bağlantı hatası:", err.message);
       tries++;
     }
   }
 
-  if (!text) throw new Error("AI failed");
+  if (!text) {
+    console.error("AI içerik üretemedi.");
+    process.exit(1);
+  }
 
-  // ⏱ TIME SYSTEM
   const now = new Date();
-  const timestamp = now.getTime();
-  const date = now.toISOString().split("T")[0];
-
-  const title = generateTitle(topic);
-  const slug = slugify(title);
-
   const payload = {
-    date,
-    timestamp,
+    date: now.toISOString().split("T")[0],
+    timestamp: now.getTime(),
     topic,
-    title,
-    slug,
+    title: generateTitle(topic),
     text
   };
 
-  // 💾 unique content file
-  fs.writeFileSync(
-    `content/${timestamp}.json`,
-    JSON.stringify(payload, null, 2)
-  );
+  // 💾 Dosyaları kaydet
+  fs.writeFileSync(`content/${payload.timestamp}.json`, JSON.stringify(payload, null, 2));
+  fs.writeFileSync("data.json", JSON.stringify(payload, null, 2));
 
-  // 🌐 always latest content
-  fs.writeFileSync(
-    "data.json",
-    JSON.stringify(payload, null, 2)
-  );
-
-  // 📚 history update
+  // 📚 Geçmişi güncelle (Son 30 kayıt)
   history.push(payload);
-  history = history.slice(-30);
+  fs.writeFileSync(historyFile, JSON.stringify(history.slice(-30), null, 2));
 
-  fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
+  console.log("✅ Yeni saçmalık yayında:", text);
 }
 
 generateText();
