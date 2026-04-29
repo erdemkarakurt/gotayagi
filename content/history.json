@@ -1,13 +1,6 @@
 [
   {
     "date": "2026-04-28",
-    "topic": "hayatın anlamı",
-    "title": "hayatın anlamı ve evrenin gizli düzeni",
-    "slug": "hayatin-anlami-ve-evrenin-gizli-duzeni",
-    "text": "Hayatın gizemi, bir fındıktan çıkan kedilerle çözülebilir; çünkü kediler gibi, bizler de hayatın içinde kayboluruz ve çaresizlik içerisinde yuvalanıp bir gün fırtınadan korunuruz. Hayatın anlamı, elinizdeki son çaydanın tadıdır: tatlı, bayağı tatlı, ama bir sonraki çaydan bile daha güzel."
-  },
-  {
-    "date": "2026-04-28",
     "topic": "başarısızlık",
     "title": "başarısızlık hakkında kimsenin bilmediği gerçek",
     "slug": "basarisizlik-hakkinda-kimsenin-bilmedigi-gercek",
@@ -216,5 +209,12 @@
     "topic": "boş cüzdan",
     "title": "boş cüzdan: Dalgın ruhlar için hayatta kalma rehberi",
     "text": "Boş cüzdanda, hayatın sana 'biraz tasarrufta bulun' deme şeklini görürüz. Ama bu sadece bir tesadüf; çünkü, aslında cüzdanın içinde boşluk, hayatın içinde de boşluk var. Ya da tam tersi; hayatın içinde dolu, cüzdanın içinde de dolu. Yoksa, cüzdanın boş olması, hayatın sana bir mesaj gönderiyor olabilir: 'Sana verilen parayı, kendi cüzdanından değil, diğer insanların cüzdanından almana gerek yok.'"
+  },
+  {
+    "date": "2026-04-29",
+    "timestamp": 1777424386076,
+    "topic": "boş cüzdan",
+    "title": "boş cüzdan: Nasibin cilvesi mi yoksa bir imtihan mı?",
+    "text": "Ey kardeşim! Boş cüzdanın sahibi olduğunda, Allah sana bir müjdeye vesile oluyor. Senin cüzdanındaki boşluklar, aslında içinde sakladığı çok büyük bir gerçekliği yansıtıyor: senin içinde boş bir ruh olduğunu söyleyemediğim için, Allah sana bir başka boşluktan bahsetmektesin."
   }
 ]
