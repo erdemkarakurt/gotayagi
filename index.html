@@ -37,7 +37,7 @@
     #btn-dinle:active { transform: translateX(-50%) scale(0.95); background: rgba(255, 255, 255, 0.2); }
 
     /* KART TASARIMI */
-    .center-box { position: relative; z-index: 2; width: 90%; max-width: 500px; padding: 10px; margin-top: 40px; }
+    .center-box { position: relative; z-index: 2; width: 90%; max-width: 500px; padding: 10px; margin-top: 20px; margin-bottom: 60px; }
     .card-ui {
       width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.08);
       backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px;
@@ -45,11 +45,34 @@
     }
 
     .brand-logo { width: 100%; max-width: 160px; height: auto; margin-bottom: 25px; display: inline-block; }
-    #title { font-size: clamp(12px, 3.5vw, 14px); opacity: 0.4; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2.5px; }
+    #title { font-size: clamp(11px, 3vw, 13px); opacity: 0.4; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2.5px; }
     #text { font-size: clamp(18px, 5.8vw, 26px); line-height: 1.4; font-weight: 700; color: #ffffff; }
     #meta { margin-top: 25px; font-size: 10px; opacity: 0.25; text-transform: uppercase; }
 
-    /* YouTube Oynatıcı (Gizli) */
+    /* 🏷️ CEZBEDİCİ FOOTER ALANI */
+    footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+      padding: 0 15px;
+    }
+
+    .footer-text {
+      font-size: clamp(10px, 3vw, 12px);
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 300;
+      letter-spacing: 0.8px;
+      line-height: 1.5;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .footer-text strong {
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+    }
+
     #yt-player { position: absolute; top: -999px; left: -999px; width: 1px; height: 1px; visibility: hidden; }
   </style>
 </head>
@@ -57,7 +80,6 @@
 <body>
 
 <canvas id="space"></canvas>
-
 <div id="yt-player"></div>
 
 <button id="btn-dinle" onclick="sesliOku(event)">🔊 SESLİ DİNLE</button>
@@ -71,13 +93,19 @@
   </main>
 </div>
 
+<footer>
+  <p class="footer-text">
+    Dünya telaşına absürt bir mola. Her gün taze bir farkındalık manifestosu için <br>
+    <strong>yarın yine bu kapıyı çal.</strong>
+  </p>
+</footer>
+
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
 let player;
 let isMusicStarted = false;
 
-// YouTube API hazır olduğunda player'ı oluşturur
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
     height: '1',
@@ -87,7 +115,7 @@ function onYouTubeIframeAPIReady() {
       'autoplay': 0,
       'controls': 0,
       'loop': 1,
-      'playlist': '40sTnf6isR0', // Loop için şart
+      'playlist': '40sTnf6isR0',
       'mute': 0
     },
     events: {
@@ -96,19 +124,14 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-// Global Tıklama Dinleyicisi (Müziği başlatmak için)
 document.addEventListener('click', function startMusicOnce() {
   if (!isMusicStarted && player && typeof player.playVideo === 'function') {
     player.playVideo();
     isMusicStarted = true;
-    console.log("🎵 Müzik başlatıldı.");
-    document.removeEventListener('click', startMusicOnce); // Sadece bir kez çalışsın
+    document.removeEventListener('click', startMusicOnce);
   }
 }, { once: false });
 
-/* =========================
-    📦 VERİ YÜKLEYİCİ
-========================= */
 async function load() {
   try {
     const res = await fetch("data.json?v=" + Date.now());
@@ -119,12 +142,12 @@ async function load() {
     document.getElementById("meta").innerText = `${d.topic.toUpperCase()} • ${d.date}`;
     document.getElementById("btn-dinle").style.display = "inline-block";
   } catch (e) {
-    document.getElementById("text").innerText = "Manifesto yüklenirken hata oluştu.";
+    document.getElementById("text").innerText = "Henüz bir manifesto bulunamadı.";
   }
 }
 
 function sesliOku(e) {
-  e.stopPropagation(); // Butona basınca global müziği tekrar tetiklemesin
+  e.stopPropagation();
   const metin = document.getElementById("text").innerText;
   const baslik = document.getElementById("title").innerText;
   const btn = document.getElementById("btn-dinle");
@@ -137,7 +160,7 @@ function sesliOku(e) {
 
   const mesaj = new SpeechSynthesisUtterance(baslik + ". " + metin);
   mesaj.lang = 'tr-TR';
-  mesaj.rate = 0.9;
+  mesaj.rate = 0.88;
   
   mesaj.onstart = () => { btn.innerText = "⏹ DURDUR"; };
   mesaj.onend = () => { btn.innerText = "🔊 SESLİ DİNLE"; };
@@ -145,53 +168,24 @@ function sesliOku(e) {
   window.speechSynthesis.speak(mesaj);
 }
 
-/* =========================
-    🌌 YILDIZ ALANI (Starfield)
-========================= */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
-
-function resize() {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
-}
+function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
 resize();
 window.addEventListener("resize", resize);
-
-const stars = Array.from({ length: 180 }, () => ({
-  x: Math.random() * w - w / 2,
-  y: Math.random() * h - h / 2,
-  z: Math.random() * w
-}));
-
+const stars = Array.from({ length: 180 }, () => ({ x: Math.random() * w - w / 2, y: Math.random() * h - h / 2, z: Math.random() * w }));
 function draw() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, w, h);
-  ctx.save();
-  ctx.translate(w / 2, h / 2);
-
+  ctx.fillStyle = "black"; ctx.fillRect(0, 0, w, h); ctx.save(); ctx.translate(w / 2, h / 2);
   for (let s of stars) {
-    s.z -= 1.1;
-    if (s.z <= 0) {
-      s.x = Math.random() * w - w / 2;
-      s.y = Math.random() * h - h / 2;
-      s.z = w;
-    }
-    const k = 120 / s.z;
-    const size = Math.max(0.1, (1 - s.z / w) * 1.6);
-    ctx.beginPath();
-    ctx.arc(s.x * k, s.y * k, size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.fill();
+    s.z -= 1.1; if (s.z <= 0) { s.x = Math.random() * w - w / 2; s.y = Math.random() * h - h / 2; s.z = w; }
+    const k = 120 / s.z; const size = Math.max(0.1, (1 - s.z / w) * 1.6);
+    ctx.beginPath(); ctx.arc(s.x * k, s.y * k, size, 0, Math.PI * 2); ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.fill();
   }
-  ctx.restore();
-  requestAnimationFrame(draw);
+  ctx.restore(); requestAnimationFrame(draw);
 }
-
 draw();
 load();
 </script>
-
 </body>
 </html>
