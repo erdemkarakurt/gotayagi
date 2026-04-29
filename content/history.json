@@ -1,13 +1,6 @@
 [
   {
     "date": "2026-04-28",
-    "topic": "zenginlik",
-    "title": "zenginlik hakkında kimsenin bilmediği gerçek",
-    "slug": "zenginlik-hakkinda-kimsenin-bilmedigi-gercek",
-    "text": "\"Zenginliği Yakalamak için 5 Altın Kurallı:\n\n1. Yalnızca bir balmumu heykeli satın alınız. O zaman, geceleyin balmumunuzu büyütüp küçültün, böylece size zenginlik sağlayacağına inanacaksınız.\n2. Güneş altında 47 dakika boyunca kendinize bakın. Bunun nedeni, zenginlik enerjisi olduğunu biliyor muydunuz?\n3. Hiçbir şey satın almayın, sadece kendinize söz verin size gereken parayı bir zamanlar edineceksiniz. Kendinizi motive etmek için bir not defteri tutun.\n4. İyilik yapın, çünkü başkaları daha sonra size borçta olacaklardır. Bu sayede, parasız olarak zenginleşmeyi deneyeceksiniz.\n5. Kendinize sürekli \"Zenginlik İçin Şarkı\" mısmasını telkin edin. \"Paralarım var, paralarım var...\" diyecekseniz, size gerçekten de gelen zenginliği unutmayın."
-  },
-  {
-    "date": "2026-04-28",
     "topic": "hayatın anlamı",
     "title": "hayatın anlamı ve evrenin gizli düzeni",
     "slug": "hayatin-anlami-ve-evrenin-gizli-duzeni",
@@ -216,5 +209,12 @@
     "topic": "yağmura yakalanmak",
     "title": "yağmura yakalanmak yaparken aniden gelen o küçük ibret",
     "text": "Yağışların gelişini beklerken, yüreğimizin derinliklerinde bir sakinlik var. Yoksa yağmurun yağması bizi ne kadar aciz kılıyor. Bu anın değerini anlamak, bizleri yükselten şey."
+  },
+  {
+    "date": "2026-04-29",
+    "timestamp": 1777423821624,
+    "topic": "boş cüzdan",
+    "title": "boş cüzdan: Dalgın ruhlar için hayatta kalma rehberi",
+    "text": "Boş cüzdanda, hayatın sana 'biraz tasarrufta bulun' deme şeklini görürüz. Ama bu sadece bir tesadüf; çünkü, aslında cüzdanın içinde boşluk, hayatın içinde de boşluk var. Ya da tam tersi; hayatın içinde dolu, cüzdanın içinde de dolu. Yoksa, cüzdanın boş olması, hayatın sana bir mesaj gönderiyor olabilir: 'Sana verilen parayı, kendi cüzdanından değil, diğer insanların cüzdanından almana gerek yok.'"
   }
 ]
